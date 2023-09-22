@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const { MongooseObject, mutiMongooseObject } = require("../util/Mongoose");
+const mongoose = require("mongoose");
 require("dotenv").config();
 const unidecode = require("unidecode");
 //format phonenumber
@@ -97,7 +98,7 @@ class AdminController {
   //Lấy người dùng theo id
   getUserbyId = async (req, res, next) => {
     if (req.body) {
-      Promise.all([User.find({ _id: req.body.id })])
+      Promise.all([User.find({ _id: req.body.id }).select("-password")])
         .then(([User]) => {
           res.json({
             User: mutiMongooseObject(User),
@@ -281,39 +282,6 @@ class AdminController {
       });
     }
   }
-  phanhoiMomo = (req, res, next) => {
-    console.log("check req: ", req.body);
-    // const data = req.body;
-    // const secretKey = "at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa";
-    // // Check the signature
-    // const signature = req.headers["x-partner-signature"];
-    // const expectedSignature = crypto
-    //   .createHmac("sha256", secretKey)
-    //   .update(JSON.stringify(data))
-    //   .digest("hex");
-
-    // if (signature === expectedSignature) {
-    //   // Verify the request's validity
-    //   if (data.partnerCode === partnerCode && data.paymentStatus === 0) {
-    //     // Process payment information here
-    //     // Update payment status, store in the database, etc.
-
-    //     // Respond to MoMo
-    //     res.status(200).send("OK");
-    //   } else {
-    //     res.status(400).send("Bad Request");
-    //   }
-    // } else {
-    //   res.status(401).send("Unauthorized");
-    // }
-    // if (data) {
-    //   console.log("check data: ", data);
-    //   console.log("check signature: ", signature);
-    //   console.log("check expectedSignature: ", expectedSignature);
-    // } else {
-    //   console.log("no data here");
-    // }
-  };
 
   getALL_collection = async (req, res, next) => {
     try {
@@ -409,11 +377,30 @@ class AdminController {
         let pipeline = [];
         if (trangthai) {
           filter.trangthai = trangthai;
-          pipeline = [
-            {
-              $match: filter,
-            },
-          ];
+          if (pagehientai && soluong) {
+            pipeline = [
+              {
+                $match: filter,
+              },
+              {
+                $sort: {
+                  createdAt: -1,
+                },
+              },
+              {
+                $skip: (pagehientai - 1) * soluong_int,
+              },
+              {
+                $limit: soluong_int,
+              },
+            ];
+          } else {
+            pipeline = [
+              {
+                $match: filter,
+              },
+            ];
+          }
         } else {
           pipeline = [
             {
@@ -584,6 +571,7 @@ class AdminController {
     const {
       type,
       hang,
+      dongmay,
       cpu,
       ram,
       dungluong,
@@ -601,10 +589,11 @@ class AdminController {
       trangthai, // 1:doiduyet, 2:daduyet, 3:tuchoi, 4:nguoidungAn admin moi them de lay ALL (macdinh cac hang lay trangthai 1)
       soluong, //so luong item muon lay moi trang
       pagehientai, // trang hien tai
+      role,
     } = req.body;
     const soluong_int = parseInt(soluong, 10); // ép kiểu xài postman
     if (req.body) {
-      if (type === "ALL") {
+      if (type == "ALL" && role !== "Admin") {
         const typesArray = [
           "dienthoai",
           "maytinhbang",
@@ -627,6 +616,7 @@ class AdminController {
         if (trangthai) {
           filter.trangthai = trangthai;
         }
+        // map lấy soluong_int của mỗi loại typesArray
         var promises = typesArray.map((type) => {
           filter.type = type;
           return Do_dien_tu.find(filter, null, options).exec(); // Lấy soluong tin đăng đầu tiên của mỗi loại
@@ -645,8 +635,84 @@ class AdminController {
             });
           })
           .catch(next);
+      } else {
+        if (role == "Admin") {
+          const filter = {
+            trangthai: 2,
+          };
+          let pipeline = [];
+          if (trangthai) {
+            filter.trangthai = trangthai;
+            pipeline = [
+              {
+                $match: filter,
+              },
+              {
+                $sort: {
+                  createdAt: -1,
+                },
+              },
+              {
+                $skip: (pagehientai - 1) * soluong_int,
+              },
+              {
+                $limit: soluong_int,
+              },
+            ];
+          } else {
+            pipeline = [
+              {
+                $match: filter,
+              },
+              {
+                $sort: {
+                  createdAt: -1,
+                },
+              },
+              {
+                $skip: (pagehientai - 1) * soluong_int,
+              },
+              {
+                $limit: soluong_int,
+              },
+            ];
+          }
+          const countDocumentsPromise = new Promise((resolve, reject) => {
+            Do_dien_tu.countDocuments(filter)
+              .then((totalCount) => resolve(totalCount))
+              .catch((error) => reject(error));
+          });
+          const getDataPromise = new Promise((resolve, reject) => {
+            Do_dien_tu.aggregate(pipeline)
+              .then((all_dodientu) => resolve(all_dodientu))
+              .catch((error) => reject(error));
+          });
+          Promise.all([countDocumentsPromise, getDataPromise]).then(
+            async ([totalCount, all_dodientu]) => {
+              const totalpages = Math.ceil(totalCount / soluong_int);
+              for (let i = 0; i < all_dodientu.length; i++) {
+                const id_user = all_dodientu[i].id_user;
+                // Sử dụng id_user để lấy thông tin user từ model User
+                try {
+                  const user = await User.findOne({ _id: id_user }).select(
+                    "-account -password -role -img"
+                  );
+                  all_dodientu[i].infor_user = user;
+                } catch (error) {
+                  console.error("Lỗi khi lấy thông tin user:", error);
+                }
+              }
+              res.status(200).json({
+                errCode: 0,
+                message: "Lấy thông tin tin đăng ALL",
+                all_dodientu: all_dodientu,
+                totalpages: totalpages,
+              });
+            }
+          );
+        }
       }
-      if (type === "dienthoai") {
+      if (type == "dienthoai") {
         // type, soluong, hang, pagehientai
         // const options = {
         //   sort: { createdAt: -1 },
@@ -680,6 +746,7 @@ class AdminController {
           type: type,
           trangthai: 2,
           ...(hang !== "ALL" && { hang }),
+          ...(dongmay && { dongmay }),
           ...(ram && { ram }),
           ...(dungluong && { dungluong }),
           ...(mausac && { mausac }),
@@ -752,11 +819,12 @@ class AdminController {
           })
           .catch(next);
       }
-      if (type === "maytinhbang") {
+      if (type == "maytinhbang") {
         const filter = {
           type: type,
           trangthai: 2,
           ...(hang !== "ALL" && { hang }),
+          ...(dongmay && { dongmay }),
           ...(ram && { ram }),
           ...(dungluong && { dungluong }),
           ...(mausac && { mausac }),
@@ -831,11 +899,12 @@ class AdminController {
           })
           .catch(next);
       }
-      if (type === "laptop") {
+      if (type == "laptop") {
         const filter = {
           type: type,
           trangthai: 2,
           ...(hang !== "ALL" && { hang }),
+          ...(dongmay && { dongmay }),
           ...(cpu && { cpu }),
           ...(ram && { ram }),
           ...(ocung && { ocung }),
@@ -911,7 +980,7 @@ class AdminController {
           })
           .catch(next);
       }
-      if (type === "desktop") {
+      if (type == "desktop") {
         const filter = {
           type: type,
           trangthai: 2,
@@ -989,7 +1058,7 @@ class AdminController {
           })
           .catch(next);
       }
-      if (type === "mayanh") {
+      if (type == "mayanh") {
         const filter = {
           type: type,
           trangthai: 2,
@@ -1064,7 +1133,7 @@ class AdminController {
           })
           .catch(next);
       }
-      if (type === "thietbideothongminh") {
+      if (type == "thietbideothongminh") {
         const filter = {
           type: type,
           trangthai: 2,
@@ -1138,7 +1207,7 @@ class AdminController {
           })
           .catch(next);
       }
-      if (type === "phukien") {
+      if (type == "phukien") {
         const filter = {
           type: type,
           trangthai: 2,
@@ -1212,7 +1281,7 @@ class AdminController {
           })
           .catch(next);
       }
-      if (type === "linhkien") {
+      if (type == "linhkien") {
         const filter = {
           type: type,
           trangthai: 2,
@@ -1314,10 +1383,11 @@ class AdminController {
       loaiphutung,
       trangthai,
       pagehientai,
+      role,
     } = req.body;
     const soluong_int = parseInt(soluong, 10); // ép kiểu xài postman
     if (req.body) {
-      if (type === "ALL") {
+      if (type === "ALL" && role !== "Admin") {
         const typesArray = [
           "oto",
           "xemay",
@@ -1358,6 +1428,82 @@ class AdminController {
             });
           })
           .catch(next);
+      } else {
+        if (role == "Admin") {
+          const filter = {
+            trangthai: 2,
+          };
+          let pipeline = [];
+          if (trangthai) {
+            filter.trangthai = trangthai;
+            pipeline = [
+              {
+                $match: filter,
+              },
+              {
+                $sort: {
+                  createdAt: -1,
+                },
+              },
+              {
+                $skip: (pagehientai - 1) * soluong_int,
+              },
+              {
+                $limit: soluong_int,
+              },
+            ];
+          } else {
+            pipeline = [
+              {
+                $match: filter,
+              },
+              {
+                $sort: {
+                  createdAt: -1,
+                },
+              },
+              {
+                $skip: (pagehientai - 1) * soluong_int,
+              },
+              {
+                $limit: soluong_int,
+              },
+            ];
+          }
+          const countDocumentsPromise = new Promise((resolve, reject) => {
+            Phuong_tien.countDocuments(filter)
+              .then((totalCount) => resolve(totalCount))
+              .catch((error) => reject(error));
+          });
+          const getDataPromise = new Promise((resolve, reject) => {
+            Phuong_tien.aggregate(pipeline)
+              .then((all_dodientu) => resolve(all_dodientu))
+              .catch((error) => reject(error));
+          });
+          Promise.all([countDocumentsPromise, getDataPromise]).then(
+            async ([totalCount, all_phuongtien]) => {
+              const totalpages = Math.ceil(totalCount / soluong_int);
+              for (let i = 0; i < all_phuongtien.length; i++) {
+                const id_user = all_phuongtien[i].id_user;
+                // Sử dụng id_user để lấy thông tin user từ model User
+                try {
+                  const user = await User.findOne({ _id: id_user }).select(
+                    "-account -password -role -img"
+                  );
+                  all_phuongtien[i].infor_user = user;
+                } catch (error) {
+                  console.error("Lỗi khi lấy thông tin user:", error);
+                }
+              }
+              res.status(200).json({
+                errCode: 0,
+                message: "Lấy thông tin tin đăng ALL",
+                all_phuongtien: all_phuongtien,
+                totalpages: totalpages,
+              });
+            }
+          );
+        }
       }
       if (type === "oto") {
         const filter = {
@@ -1828,11 +1974,30 @@ class AdminController {
         let pipeline = [];
         if (trangthai) {
           filter.trangthai = trangthai;
-          pipeline = [
-            {
-              $match: filter,
-            },
-          ];
+          if (pagehientai && soluong) {
+            pipeline = [
+              {
+                $match: filter,
+              },
+              {
+                $sort: {
+                  createdAt: -1,
+                },
+              },
+              {
+                $skip: (pagehientai - 1) * soluong_int,
+              },
+              {
+                $limit: soluong_int,
+              },
+            ];
+          } else {
+            pipeline = [
+              {
+                $match: filter,
+              },
+            ];
+          }
         } else {
           pipeline = [
             {
@@ -1984,10 +2149,11 @@ class AdminController {
       soluong,
       trangthai,
       pagehientai,
+      role,
     } = req.body;
     const soluong_int = parseInt(soluong, 10); // ép kiểu xài postman
     if (req.body) {
-      if (type === "ALL") {
+      if (type === "ALL" && role !== "Admin") {
         const typesArray = ["tulanh", "maylanh", "maygiat"];
         const options = {
           sort: { createdAt: -1 },
@@ -2019,6 +2185,82 @@ class AdminController {
             });
           })
           .catch(next);
+      } else {
+        if (role == "Admin") {
+          const filter = {
+            trangthai: 2,
+          };
+          let pipeline = [];
+          if (trangthai) {
+            filter.trangthai = trangthai;
+            pipeline = [
+              {
+                $match: filter,
+              },
+              {
+                $sort: {
+                  createdAt: -1,
+                },
+              },
+              {
+                $skip: (pagehientai - 1) * soluong_int,
+              },
+              {
+                $limit: soluong_int,
+              },
+            ];
+          } else {
+            pipeline = [
+              {
+                $match: filter,
+              },
+              {
+                $sort: {
+                  createdAt: -1,
+                },
+              },
+              {
+                $skip: (pagehientai - 1) * soluong_int,
+              },
+              {
+                $limit: soluong_int,
+              },
+            ];
+          }
+          const countDocumentsPromise = new Promise((resolve, reject) => {
+            Dien_lanh.countDocuments(filter)
+              .then((totalCount) => resolve(totalCount))
+              .catch((error) => reject(error));
+          });
+          const getDataPromise = new Promise((resolve, reject) => {
+            Dien_lanh.aggregate(pipeline)
+              .then((all_dienlanh) => resolve(all_dienlanh))
+              .catch((error) => reject(error));
+          });
+          Promise.all([countDocumentsPromise, getDataPromise]).then(
+            async ([totalCount, all_dienlanh]) => {
+              const totalpages = Math.ceil(totalCount / soluong_int);
+              for (let i = 0; i < all_dienlanh.length; i++) {
+                const id_user = all_dienlanh[i].id_user;
+                // Sử dụng id_user để lấy thông tin user từ model User
+                try {
+                  const user = await User.findOne({ _id: id_user }).select(
+                    "-account -password -role -img"
+                  );
+                  all_dienlanh[i].infor_user = user;
+                } catch (error) {
+                  console.error("Lỗi khi lấy thông tin user:", error);
+                }
+              }
+              res.status(200).json({
+                errCode: 0,
+                message: "Lấy thông tin tin đăng ALL",
+                all_dienlanh: all_dienlanh,
+                totalpages: totalpages,
+              });
+            }
+          );
+        }
       }
       if (type === "tulanh") {
         const filter = {
@@ -2263,11 +2505,30 @@ class AdminController {
         let pipeline = [];
         if (trangthai) {
           filter.trangthai = trangthai;
-          pipeline = [
-            {
-              $match: filter,
-            },
-          ];
+          if (pagehientai && soluong) {
+            pipeline = [
+              {
+                $match: filter,
+              },
+              {
+                $sort: {
+                  createdAt: -1,
+                },
+              },
+              {
+                $skip: (pagehientai - 1) * soluong_int,
+              },
+              {
+                $limit: soluong_int,
+              },
+            ];
+          } else {
+            pipeline = [
+              {
+                $match: filter,
+              },
+            ];
+          }
         } else {
           pipeline = [
             {
@@ -2426,11 +2687,30 @@ class AdminController {
         let pipeline = [];
         if (trangthai) {
           filter.trangthai = trangthai;
-          pipeline = [
-            {
-              $match: filter,
-            },
-          ];
+          if (pagehientai && soluong) {
+            pipeline = [
+              {
+                $match: filter,
+              },
+              {
+                $sort: {
+                  createdAt: -1,
+                },
+              },
+              {
+                $skip: (pagehientai - 1) * soluong_int,
+              },
+              {
+                $limit: soluong_int,
+              },
+            ];
+          } else {
+            pipeline = [
+              {
+                $match: filter,
+              },
+            ];
+          }
         } else {
           pipeline = [
             {
@@ -2588,11 +2868,30 @@ class AdminController {
         let pipeline = [];
         if (trangthai) {
           filter.trangthai = trangthai;
-          pipeline = [
-            {
-              $match: filter,
-            },
-          ];
+          if (pagehientai && soluong) {
+            pipeline = [
+              {
+                $match: filter,
+              },
+              {
+                $sort: {
+                  createdAt: -1,
+                },
+              },
+              {
+                $skip: (pagehientai - 1) * soluong_int,
+              },
+              {
+                $limit: soluong_int,
+              },
+            ];
+          } else {
+            pipeline = [
+              {
+                $match: filter,
+              },
+            ];
+          }
         } else {
           pipeline = [
             {
@@ -2799,7 +3098,7 @@ class AdminController {
             }
             const id_nguoidung = Hoc_tap[0].id_user;
             return User.find({ _id: id_nguoidung })
-              .select("-account -password") // ẩn các trường không cần thiết
+              .select("-password") // ẩn các trường không cần thiết
               .then((User) => {
                 if (!User) {
                   return res
@@ -2825,7 +3124,7 @@ class AdminController {
             }
             const id_nguoidung = Do_dien_tu[0].id_user;
             return User.find({ _id: id_nguoidung })
-              .select("-account -password") // ẩn các trường không cần thiết
+              .select("-password") // ẩn các trường không cần thiết
               .then((User) => {
                 if (!User) {
                   return res
@@ -2851,7 +3150,7 @@ class AdminController {
             }
             const id_nguoidung = Phuong_tien[0].id_user;
             return User.find({ _id: id_nguoidung })
-              .select("-account -password") // ẩn các trường không cần thiết
+              .select("-password") // ẩn các trường không cần thiết
               .then((User) => {
                 if (!User) {
                   return res
@@ -2877,7 +3176,7 @@ class AdminController {
             }
             const id_nguoidung = Do_noi_that[0].id_user;
             return User.find({ _id: id_nguoidung })
-              .select("-account -password") // ẩn các trường không cần thiết
+              .select("-password") // ẩn các trường không cần thiết
               .then((User) => {
                 if (!User) {
                   return res
@@ -2903,7 +3202,7 @@ class AdminController {
             }
             const id_nguoidung = Dien_lanh[0].id_user;
             return User.find({ _id: id_nguoidung })
-              .select("-account -password") // ẩn các trường không cần thiết
+              .select("-password") // ẩn các trường không cần thiết
               .then((User) => {
                 if (!User) {
                   return res
@@ -2929,7 +3228,7 @@ class AdminController {
             }
             const id_nguoidung = Do_ca_nhan[0].id_user;
             return User.find({ _id: id_nguoidung })
-              .select("-account -password") // ẩn các trường không cần thiết
+              .select("-password") // ẩn các trường không cần thiết
               .then((User) => {
                 if (!User) {
                   return res
@@ -2955,7 +3254,7 @@ class AdminController {
             }
             const id_nguoidung = Do_giai_tri[0].id_user;
             return User.find({ _id: id_nguoidung })
-              .select("-account -password") // ẩn các trường không cần thiết
+              .select("-password") // ẩn các trường không cần thiết
               .then((User) => {
                 if (!User) {
                   return res
@@ -2981,7 +3280,7 @@ class AdminController {
             }
             const id_nguoidung = Thu_cung[0].id_user;
             return User.find({ _id: id_nguoidung })
-              .select("-account -password") // ẩn các trường không cần thiết
+              .select("-password") // ẩn các trường không cần thiết
               .then((User) => {
                 if (!User) {
                   return res
@@ -3350,6 +3649,7 @@ class AdminController {
                   errCode: 0,
                   message: "Đã ẩn tin thành công",
                   trangthai: tindang.trangthai,
+                  lydoantin: lydoantin,
                 });
               })
               .catch(next);
@@ -3366,6 +3666,7 @@ class AdminController {
                   errCode: 0,
                   message: "Đã ẩn tin thành công",
                   trangthai: tindang.trangthai,
+                  lydoantin: lydoantin,
                 });
               })
               .catch(next);
@@ -3382,6 +3683,7 @@ class AdminController {
                   errCode: 0,
                   message: "Đã ẩn tin thành công",
                   trangthai: tindang.trangthai,
+                  lydoantin: lydoantin,
                 });
               })
               .catch(next);
@@ -3398,6 +3700,7 @@ class AdminController {
                   errCode: 0,
                   message: "Đã ẩn tin thành công",
                   trangthai: tindang.trangthai,
+                  lydoantin: lydoantin,
                 });
               })
               .catch(next);
@@ -3414,6 +3717,7 @@ class AdminController {
                   errCode: 0,
                   message: "Đã ẩn tin thành công",
                   trangthai: tindang.trangthai,
+                  lydoantin: lydoantin,
                 });
               })
               .catch(next);
@@ -3430,6 +3734,7 @@ class AdminController {
                   errCode: 0,
                   message: "Đã ẩn tin thành công",
                   trangthai: tindang.trangthai,
+                  lydoantin: lydoantin,
                 });
               })
               .catch(next);
@@ -3446,6 +3751,7 @@ class AdminController {
                   errCode: 0,
                   message: "Đã ẩn tin thành công",
                   trangthai: tindang.trangthai,
+                  lydoantin: lydoantin,
                 });
               })
               .catch(next);
@@ -3462,6 +3768,7 @@ class AdminController {
                   errCode: 0,
                   message: "Đã ẩn tin thành công",
                   trangthai: tindang.trangthai,
+                  lydoantin: lydoantin,
                 });
               })
               .catch(next);
@@ -3919,265 +4226,112 @@ class AdminController {
       });
     }
   }
-  SearchHeader = async (req, res, next) => {
-    const { keyword } = req.body;
-    if (keyword) {
+  Search_tindang_daduyet = async (req, res, next) => {
+    const { keyword, typecollection } = req.body; //hoctap, phuongtien, dodientu, donoithat, dienlanh, dodungcanhan, dogiaitri, thucung
+    if (keyword && typecollection) {
       try {
-        const result = await Do_dien_tu.find({
-          $or: [
-            { hang: { $regex: keyword, $options: "i" } },
-            { dongmay: { $regex: keyword, $options: "i" } },
-          ],
-        }).select(
-          "-trangthaithanhtoan -trangthai -deleted -tinhtrang -type -hang -ram -dungluong -mausac -mota"
-        );
+        let result;
+        // check keyword có phải là ObjectId
+        const isObjectId = mongoose.Types.ObjectId.isValid(keyword);
+        if (typecollection == "dodientu") {
+          if (isObjectId) {
+            result = await Do_dien_tu.find({ _id: keyword });
+          } else {
+            result = await Do_dien_tu.find({
+              tieude: { $regex: keyword, $options: "i" },
+            });
+          }
+        }
+        if (typecollection == "hoctap") {
+          if (isObjectId) {
+            result = await Hoc_tap.find({ _id: keyword });
+          } else {
+            result = await Hoc_tap.find({
+              tieude: { $regex: keyword, $options: "i" },
+            });
+          }
+        }
+        if (typecollection == "phuongtien") {
+          if (isObjectId) {
+            result = await Phuong_tien.find({ _id: keyword });
+          } else {
+            result = await Phuong_tien.find({
+              tieude: { $regex: keyword, $options: "i" },
+            });
+          }
+        }
+        if (typecollection == "donoithat") {
+          if (isObjectId) {
+            result = await Do_noi_that.find({ _id: keyword });
+          } else {
+            result = await Do_noi_that.find({
+              tieude: { $regex: keyword, $options: "i" },
+            });
+          }
+        }
+        if (typecollection == "dienlanh") {
+          if (isObjectId) {
+            result = await Dien_lanh.find({ _id: keyword });
+          } else {
+            result = await Dien_lanh.find({
+              tieude: { $regex: keyword, $options: "i" },
+            });
+          }
+        }
+        if (typecollection == "dodungcanhan") {
+          if (isObjectId) {
+            result = await Do_ca_nhan.find({ _id: keyword });
+          } else {
+            result = await Do_ca_nhan.find({
+              tieude: { $regex: keyword, $options: "i" },
+            });
+          }
+        }
+        if (typecollection == "dogiaitri") {
+          if (isObjectId) {
+            result = await Do_giai_tri.find({ _id: keyword });
+          } else {
+            result = await Do_giai_tri.find({
+              tieude: { $regex: keyword, $options: "i" },
+            });
+          }
+        }
+        if (typecollection == "thucung") {
+          if (isObjectId) {
+            result = await Thu_cung.find({ _id: keyword });
+          } else {
+            result = await Thu_cung.find({
+              tieude: { $regex: keyword, $options: "i" },
+            });
+          }
+        }
 
-        res.status(200).json({
-          errCode: 0,
-          message: "Search thành công",
-          resultSearch: result,
-        });
+        if (result.length === 0) {
+          res.status(404).json({
+            errCode: 1,
+            message: "Không tìm thấy kết quả phù hợp",
+          });
+        } else {
+          res.status(200).json({
+            errCode: 0,
+            message: "Tìm kiếm thành công",
+            resultSearch: result,
+          });
+        }
       } catch (error) {
         console.error(error);
-        res.status(200).json({
+        res.status(500).json({
           errCode: 1,
           message: "Lỗi khi tìm kiếm",
         });
       }
     } else {
-      res.status(200).json({
+      res.status(400).json({
         errCode: 1,
         message: "Không có keyword",
       });
     }
   };
   //----------------------------------------------------------------------------
-  // Tạo loại tin đăng
-  async createTypeProduct(req, res, next) {
-    if (req.body) {
-      const typename = await typeProduct.findOne({ name: req.body.name });
-      if (typename) {
-        return res.status(200).json({
-          errCode: 2,
-          message: "Loại tin đăng này đã tồn tại",
-        });
-      } else {
-        // Lưu user
-        req.body = new typeProduct(req.body);
-        req.body
-          .save()
-          .then(async () => {
-            res.json({
-              errCode: 0,
-              message: "Thêm loại thành công.",
-            });
-          })
-          .catch(next);
-      }
-    } else {
-      return res.status(200).json({
-        errCode: 1,
-        message: "Thông tin rỗng, vui lòng nhập lại",
-      });
-    }
-  }
-  // Lấy loại tin đăng
-  getTypeProduct = async (req, res, next) => {
-    if (req.body) {
-      Promise.all([typeProduct.find({ type: req.body.type })])
-        .then(([typeProduct]) => {
-          res.json({
-            typeProduct: mutiMongooseObject(typeProduct),
-          });
-        })
-        .catch(next);
-    } else {
-      return res.status(500).json({
-        errCode: 1,
-        mess: "Lấy thông tin bị lỗi.",
-      });
-    }
-  };
-  // cập nhật tin đăng collection Product
-  updateProduct = async (req, res, next) => {
-    if (req.params) {
-      const code = req.body.name.toLowerCase().replace(/[^a-zA-Z0-9]+/g, "-");
-      req.body.code = code;
-      Product.updateOne({ _id: req.params.id }, req.body)
-        .then(() => {
-          return res.json({
-            errCode: 0,
-            message: `Cập nhật tin đăng ${req.params.type} thành công`,
-          });
-        })
-        .catch(next);
-    } else {
-      return res.status(200).json({
-        errCode: 1,
-        message: `Thiếu tham số truyền vào`,
-      });
-    }
-  };
-
-  createOrder = async (req, res, next) => {
-    if (req.body) {
-      // Lưu Order
-      req.body = new Order(req.body);
-      const cartItems = req.body.cartItems;
-      const promises = cartItems.map(async (item) => {
-        try {
-          // Tìm tin đăng trong collection dựa trên id và type
-          const product = await Product.findOne({
-            _id: item.id,
-            type: item.type,
-          });
-          if (product) {
-            // Trừ đi giá trị amount của tin đăng
-            product.amount -= item.is_sold;
-            //Cập nhật số lượng đã bán ra
-            product.is_sold += item.is_sold;
-            // Lưu lại tin đăng đã được cập nhật
-            await product.save();
-          }
-        } catch (error) {
-          console.error(error);
-        }
-      });
-
-      Promise.all(promises)
-        .then(async () => {
-          req.body
-            .save()
-            .then(() => {
-              res.json({
-                errCode: 0,
-                message: "Order thành công",
-              });
-            })
-            .catch(next);
-        })
-        .catch(next);
-    } else {
-      return res.status(200).json({
-        errCode: 1,
-        message: "Thông tin rỗng, vui lòng nhập lại",
-      });
-    }
-  };
-  // Lấy tất cả Order
-  getAllOrder(req, res, next) {
-    Order.find()
-      .then((order) => {
-        res.json({
-          order: mutiMongooseObject(order),
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-  // Hủy đặt đơn hàng
-  cancelOrder = async (req, res, next) => {
-    const { id } = req.params;
-    if (id) {
-      let order = await Order.findOne({ _id: id });
-      order.status = 4;
-      if (order) {
-        Order.updateOne({ _id: id }, order)
-          .then(() => {
-            return res.json({
-              errCode: 0,
-              message: "Huỷ thành công",
-            });
-          })
-          .catch(next);
-      } else {
-        return res.json({ errCode: 1, message: "Không tìm thấy đơn hàng" });
-      }
-    }
-  };
-  // Xóa đơn hàng
-  deleteOrder(req, res, next) {
-    Order.deleteOne({ _id: req.params.id })
-      .then(() => {
-        res.json({
-          errCode: 0,
-          message: "Xóa đơn hàng thành công.",
-        });
-      })
-      .catch(next);
-  }
-  //Tạo lịch sử order
-  createHistoryOrder = async (req, res, next) => {
-    if (req.body) {
-      Order.deleteOne({ _id: req.body._id }).catch(next);
-      // Lưu History
-      req.body = new History(req.body);
-      req.body
-        .save()
-        .then(async () => {
-          res.status(200).json({
-            errCode: 0,
-            message: "Tạo lịch sử order thành công",
-          });
-        })
-        .catch(next);
-    } else {
-      return res.status(200).json({
-        errCode: 1,
-        message: "Thông tin rỗng, vui lòng nhập lại",
-      });
-    }
-  };
-  // Lấy tất cả lịch sử Order
-  getAllHistoryOrder(req, res, next) {
-    History.find()
-      .then((history_order) => {
-        res.json({
-          errCode: 0,
-          message: "Lấy tất cả lịch sử order thành công",
-          history_order: mutiMongooseObject(history_order),
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-  //Xóa lịch sử order theo _id
-  deleteHistoryOrder_Admin(req, res, next) {
-    History.deleteOne({ _id: req.params.id })
-      .then(() => {
-        res.json({
-          errCode: 0,
-          message: "Xóa Lịch sử đơn hàng thành công.",
-        });
-      })
-      .catch(next);
-  }
-  //lọc lịch sử order theo Tháng
-  getHistoryOrderbyMonth = async (req, res, next) => {
-    if (req.body) {
-      const queryDate = req.body.time_order;
-      try {
-        const history = await History.find({
-          time_order: {
-            $regex: queryDate, // Tìm các kết quả có "MM/YYYY" trong "time_order"
-          },
-        });
-        res.status(200).json({
-          errCode: 0,
-          message: "Lấy lịch sử đơn hàng theo THÁNG thành công",
-          History: mutiMongooseObject(history),
-        });
-      } catch (error) {
-        next(error);
-      }
-    } else {
-      return res.status(500).json({
-        errCode: 1,
-        message: "Lọc lịch sử đơn hàng bị lỗi.",
-      });
-    }
-  };
 }
 module.exports = new AdminController();

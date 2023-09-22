@@ -7,12 +7,13 @@ const adminController = require("../controllers/adminController");
 router.get("/admin/get-user", adminController.getAllUser);
 // // Lấy tin đăng cho homepage
 router.get("/admin/get-all-collection", adminController.getALL_collection);
-// // Lấy tất cả lịch sử order
-// router.get("/admin/get-all-history-order", adminController.getAllHistoryOrder);
 
 //Post
 // xử lý input Search tìm sản phẩm
-router.post("/admin/search-header", adminController.SearchHeader);
+router.post(
+  "/admin/search-tindang-daduyet",
+  adminController.Search_tindang_daduyet
+);
 // Lấy tất cả sản phẩm trong collection
 router.post(
   "/admin/get-product-do-hoc-tap",
@@ -52,28 +53,13 @@ router.post(
   "/admin/get-tindang-by-id-user",
   adminController.getTindangbyIdUser
 );
-// // lấy tất cả các bill
-// // router.get("/admin/get-bill", adminController.getBill);
 
 // //Tạo tất cả sản phẩm chung 1 collection Product
 router.post(
   "/admin/create-dang-tin/:id_user-:type",
   adminController.create_Dangtin
 );
-router.post("/admin/phanhoiMomo", adminController.phanhoiMomo);
-// router.post("/admin/create-order", adminController.createOrder);
-// router.post("/admin/create-history-order", adminController.createHistoryOrder);
 
-// router.post(
-//   "/admin/get-history-order-by-date",
-//   adminController.getHistoryOrderbyMonth
-// );
-
-// router.post("/admin/create-type-product", adminController.createTypeProduct);
-// // Put
-// // Sửa, cập nhật 1 sẩn phẩm
-// // router.put("/admin/product/:type/:id", adminController.updateProduct);
-// router.put("/admin/product/:type/:id", adminController.updateProduct);
 // // Cập nhật trạng thái đơn hàng
 router.put(
   "/admin/update-status-tindang",
@@ -87,21 +73,10 @@ router.put(
   "/admin/update-status-thanhtoan",
   adminController.updateTrangthai_thanhtoan
 );
-// // Hủy đặt đơn hàng
-// router.put("/admin/cancel-order/:id", adminController.cancelOrder);
-
 // // delete
 // // XÓa 1 người dùng, 1 sản phẩm
-// router.delete("/admin/delete-user/:id", adminController.deleteUser);
+router.delete("/admin/delete-user/:id", adminController.deleteUser);
 router.delete("/admin/delete-tindang/:type/:id", adminController.deleteBaidang);
-// router.delete(
-//   "/admin/delete-history-order-admin/:id",
-//   adminController.deleteHistoryOrder_Admin
-// );
-// // Xóa đơn hàng
-// router.delete("/admin/delete-order/:id", adminController.deleteOrder);
-
-// // post get put delete
 
 // // Login
 router.post("/login", adminController.login);

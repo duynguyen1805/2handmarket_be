@@ -10,6 +10,7 @@ async function connect() {
     console.log("Thành công!!!");
   } catch (error) {
     console.log("Thử lại!!!");
+    console.log(error);
   }
 }
 
