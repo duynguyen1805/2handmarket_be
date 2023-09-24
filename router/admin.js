@@ -7,7 +7,11 @@ const adminController = require("../controllers/adminController");
 router.get("/admin/get-user", adminController.getAllUser);
 // // Lấy tin đăng cho homepage
 router.get("/admin/get-all-collection", adminController.getALL_collection);
-
+// Lấy tin đăng cho homepage
+router.get(
+  "/admin/get-all-soluongtin",
+  adminController.get_soluongtin_moidanhmuc
+);
 //Post
 // xử lý input Search tìm sản phẩm
 router.post(

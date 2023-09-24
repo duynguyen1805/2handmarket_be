@@ -17,6 +17,7 @@ const Thu_cung = require("../models/Thu_cung");
 const phoneUtil = PhoneNumberUtil.getInstance();
 var salt = bcrypt.genSaltSync(10);
 const crypto = require("crypto");
+const { createJWT } = require("../middleware/JWT");
 
 class AdminController {
   // NGƯỜI DÙNG
@@ -55,7 +56,7 @@ class AdminController {
   login = async (req, res, next) => {
     const account = req.body.account;
     const password = req.body.password;
-    console.log("req.body", req.body);
+    // console.log("req.body", req.body);
     if (!account || !password) {
       return res.status(200).json({
         errCode: 1,
@@ -66,9 +67,20 @@ class AdminController {
       if (user) {
         let result = await bcrypt.compareSync(password, user.password);
         if (result) {
-          return res
-            .status(200)
-            .json({ errCode: 0, message: "Đăng nhập thành công", user: user });
+          let token = createJWT({
+            _id: user._id,
+            name: user.name,
+            account: user.account,
+            address: user.address,
+            avatar: user.img,
+            role: user.role,
+          });
+          return res.status(200).json({
+            errCode: 0,
+            message: "Đăng nhập thành công",
+            user: user,
+            access_token: token,
+          });
         } else {
           return res.status(200).json({
             errCode: 2,
@@ -166,6 +178,7 @@ class AdminController {
       });
     }
   };
+
   // ĐĂNG TIN
   //Tạo tin đăng từng collection
   async create_Dangtin(req, res, next) {
@@ -275,6 +288,22 @@ class AdminController {
           )
           .catch(next);
       }
+      const socket = req.app.get("socket"); // Lấy đối tượng socket.io từ ứng dụng Express
+      if (socket) {
+        // Gửi thông báo đến admin
+        socket.emit("new-post", {
+          message: `Có tin đăng mới trong mục ${
+            (type == "hoctap" && "Học tập") ||
+            (type == "phuongtien" && "Phương tiện") ||
+            (type == "dodientu" && "Đồ điện tử") ||
+            (type == "donoithat" && "Đồ nội thất") ||
+            (type == "dienlanh" && "Điện lạnh") ||
+            (type == "dodungcanhan" && "Đồ dùng cá nhân") ||
+            (type == "dogiaitri" && "Đồ giải trí") ||
+            (type == "thucung" && "Thú cưng")
+          }`,
+        });
+      }
     } else {
       return res.status(500).json({
         errCode: 1,
@@ -287,32 +316,32 @@ class AdminController {
     try {
       //moi collection lay 3 tin moi nhat
       const all_collection = await Promise.all([
-        Hoc_tap.find({ trangthai: 2 }).sort({ createdAt: -1 }).limit(3).exec(),
+        Hoc_tap.find({ trangthai: 2 }).sort({ updatedAt: -1 }).limit(4).exec(),
         Phuong_tien.find({ trangthai: 2 })
-          .sort({ createdAt: -1 })
-          .limit(3)
+          .sort({ updatedAt: -1 })
+          .limit(4)
           .exec(),
         Do_dien_tu.find({ trangthai: 2 })
-          .sort({ createdAt: -1 })
-          .limit(3)
+          .sort({ updatedAt: -1 })
+          .limit(4)
           .exec(),
         Do_noi_that.find({ trangthai: 2 })
-          .sort({ createdAt: -1 })
-          .limit(3)
+          .sort({ updatedAt: -1 })
+          .limit(4)
           .exec(),
         Dien_lanh.find({ trangthai: 2 })
-          .sort({ createdAt: -1 })
-          .limit(3)
+          .sort({ updatedAt: -1 })
+          .limit(4)
           .exec(),
         Do_ca_nhan.find({ trangthai: 2 })
-          .sort({ createdAt: -1 })
-          .limit(3)
+          .sort({ updatedAt: -1 })
+          .limit(4)
           .exec(),
         Do_giai_tri.find({ trangthai: 2 })
-          .sort({ createdAt: -1 })
-          .limit(3)
+          .sort({ updatedAt: -1 })
+          .limit(4)
           .exec(),
-        Thu_cung.find({ trangthai: 2 }).sort({ createdAt: -1 }).limit(3).exec(),
+        Thu_cung.find({ trangthai: 2 }).sort({ updatedAt: -1 }).limit(4).exec(),
       ]);
       // merge chung 1 [] sort bên FE
       const merged_Allcollection = [].concat(...all_collection);
@@ -327,6 +356,43 @@ class AdminController {
     }
   };
 
+  get_soluongtin_moidanhmuc = async (req, res, next) => {
+    try {
+      const soluongtin_doiduyet = await Promise.all([
+        Hoc_tap.countDocuments({ trangthai: 1 }),
+        Phuong_tien.countDocuments({ trangthai: 1 }),
+        Do_dien_tu.countDocuments({ trangthai: 1 }),
+        Do_noi_that.countDocuments({ trangthai: 1 }),
+        Dien_lanh.countDocuments({ trangthai: 1 }),
+        Do_ca_nhan.countDocuments({ trangthai: 1 }),
+        Do_giai_tri.countDocuments({ trangthai: 1 }),
+        Thu_cung.countDocuments({ trangthai: 1 }),
+      ]);
+      const soluongtin_daduyet = await Promise.all([
+        Hoc_tap.countDocuments({ trangthai: 2 }),
+        Phuong_tien.countDocuments({ trangthai: 2 }),
+        Do_dien_tu.countDocuments({ trangthai: 2 }),
+        Do_noi_that.countDocuments({ trangthai: 2 }),
+        Dien_lanh.countDocuments({ trangthai: 2 }),
+        Do_ca_nhan.countDocuments({ trangthai: 2 }),
+        Do_giai_tri.countDocuments({ trangthai: 2 }),
+        Thu_cung.countDocuments({ trangthai: 2 }),
+      ]);
+      const merged_All_doiduyet = [].concat(...soluongtin_doiduyet);
+      const merged_All_daduyet = [].concat(...soluongtin_daduyet);
+      res.status(200).json({
+        all_soluongtin_doiduyet: merged_All_doiduyet,
+        all_soluongtin_daduyet: merged_All_daduyet,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(200).json({
+        error: 1,
+        message: "Lấy get_soluongtin_moidanhmuc bị lỗi",
+      });
+    }
+  };
+
   getProduct_Dohoctap = async (req, res, next) => {
     //type: giaotrinh, sachthamkhao, other_hoctap
     const { type, soluong, trangthai, pagehientai } = req.body;
@@ -335,7 +401,7 @@ class AdminController {
       // if (type === "ALL") {
       // const typesArray = ["giaotrinh", "sachthamkhao", "other_hoctap"];
       //   const options = {
-      //     sort: { createdAt: -1 },
+      //     sort: { updatedAt: -1 },
       //     limit: soluong_int,
       //     skip: (pagehientai - 1) * soluong_int, // Tính vị trí bắt đầu lấy dữ liệu
       //   };
@@ -384,7 +450,7 @@ class AdminController {
               },
               {
                 $sort: {
-                  createdAt: -1,
+                  updatedAt: -1,
                 },
               },
               {
@@ -420,7 +486,7 @@ class AdminController {
             {
               $sort: {
                 tralendauList: -1,
-                createdAt: -1,
+                updatedAt: -1,
               },
             },
             {
@@ -471,7 +537,7 @@ class AdminController {
           .catch(next);
       } else {
         // const options = {
-        //   sort: { createdAt: -1 },
+        //   sort: { updatedAt: -1 },
         //   limit: soluong_int,
         //   skip: (pagehientai - 1) * soluong_int, // Tính vị trí bắt đầu lấy dữ liệu
         // };
@@ -497,7 +563,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -605,7 +671,7 @@ class AdminController {
           "linhkien",
         ];
         const options = {
-          sort: { createdAt: -1 },
+          sort: { updatedAt: -1 },
           limit: soluong_int,
           skip: (pagehientai - 1) * soluong_int, // Tính vị trí bắt đầu lấy dữ liệu
         };
@@ -649,7 +715,7 @@ class AdminController {
               },
               {
                 $sort: {
-                  createdAt: -1,
+                  updatedAt: -1,
                 },
               },
               {
@@ -666,7 +732,7 @@ class AdminController {
               },
               {
                 $sort: {
-                  createdAt: -1,
+                  updatedAt: -1,
                 },
               },
               {
@@ -715,7 +781,7 @@ class AdminController {
       if (type == "dienthoai") {
         // type, soluong, hang, pagehientai
         // const options = {
-        //   sort: { createdAt: -1 },
+        //   sort: { updatedAt: -1 },
         //   limit: soluong_int,
         //   skip: (pagehientai - 1) * soluong_int, // Tính vị trí bắt đầu lấy dữ liệu
         // };
@@ -770,7 +836,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -850,7 +916,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -931,7 +997,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -1009,7 +1075,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -1084,7 +1150,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -1158,7 +1224,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -1232,7 +1298,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -1306,7 +1372,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -1397,7 +1463,7 @@ class AdminController {
           "phutung",
         ];
         const options = {
-          sort: { createdAt: -1 },
+          sort: { updatedAt: -1 },
           limit: soluong_int,
           skip: (pagehientai - 1) * soluong_int, // Tính vị trí bắt đầu lấy dữ liệu
         };
@@ -1442,7 +1508,7 @@ class AdminController {
               },
               {
                 $sort: {
-                  createdAt: -1,
+                  updatedAt: -1,
                 },
               },
               {
@@ -1459,7 +1525,7 @@ class AdminController {
               },
               {
                 $sort: {
-                  createdAt: -1,
+                  updatedAt: -1,
                 },
               },
               {
@@ -1533,7 +1599,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -1609,7 +1675,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -1684,7 +1750,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -1759,7 +1825,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -1833,7 +1899,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -1906,7 +1972,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -1981,7 +2047,7 @@ class AdminController {
               },
               {
                 $sort: {
-                  createdAt: -1,
+                  updatedAt: -1,
                 },
               },
               {
@@ -2017,7 +2083,7 @@ class AdminController {
             {
               $sort: {
                 tralendauList: -1,
-                createdAt: -1,
+                updatedAt: -1,
               },
             },
             {
@@ -2084,7 +2150,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -2156,7 +2222,7 @@ class AdminController {
       if (type === "ALL" && role !== "Admin") {
         const typesArray = ["tulanh", "maylanh", "maygiat"];
         const options = {
-          sort: { createdAt: -1 },
+          sort: { updatedAt: -1 },
           limit: soluong_int,
           skip: (pagehientai - 1) * soluong_int, // Tính vị trí bắt đầu lấy dữ liệu
         };
@@ -2199,7 +2265,7 @@ class AdminController {
               },
               {
                 $sort: {
-                  createdAt: -1,
+                  updatedAt: -1,
                 },
               },
               {
@@ -2216,7 +2282,7 @@ class AdminController {
               },
               {
                 $sort: {
-                  createdAt: -1,
+                  updatedAt: -1,
                 },
               },
               {
@@ -2287,7 +2353,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -2361,7 +2427,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -2436,7 +2502,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -2512,7 +2578,7 @@ class AdminController {
               },
               {
                 $sort: {
-                  createdAt: -1,
+                  updatedAt: -1,
                 },
               },
               {
@@ -2548,7 +2614,7 @@ class AdminController {
             {
               $sort: {
                 tralendauList: -1,
-                createdAt: -1,
+                updatedAt: -1,
               },
             },
             {
@@ -2620,7 +2686,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -2694,7 +2760,7 @@ class AdminController {
               },
               {
                 $sort: {
-                  createdAt: -1,
+                  updatedAt: -1,
                 },
               },
               {
@@ -2730,7 +2796,7 @@ class AdminController {
             {
               $sort: {
                 tralendauList: -1,
-                createdAt: -1,
+                updatedAt: -1,
               },
             },
             {
@@ -2801,7 +2867,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -2875,7 +2941,7 @@ class AdminController {
               },
               {
                 $sort: {
-                  createdAt: -1,
+                  updatedAt: -1,
                 },
               },
               {
@@ -2911,7 +2977,7 @@ class AdminController {
             {
               $sort: {
                 tralendauList: -1,
-                createdAt: -1,
+                updatedAt: -1,
               },
             },
             {
@@ -2982,7 +3048,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              createdAt: -1,
+              updatedAt: -1,
             },
           },
           {
@@ -3303,7 +3369,7 @@ class AdminController {
     try {
       const { id } = req.body;
       const infor_user = await Promise.all([
-        User.findOne({ _id: id }).select("-account -password"),
+        User.findOne({ _id: id }).select("-password"),
       ]);
       const tindang = await Promise.all([
         Hoc_tap.find({ id_user: id }),

@@ -1,8 +1,8 @@
 const path = require("path");
 const express = require("express");
 const morgan = require("morgan");
-
-const port = 4000;
+require("dotenv").config();
+const port = process.env.PORT;
 const route = require("./router");
 const db = require("./config/db");
 const methodOverride = require("method-override");
@@ -12,7 +12,6 @@ var bodyParser = require("body-parser");
 
 const http = require("http");
 const { Server } = require("socket.io");
-const { initSocket } = require("./socket-io/socket");
 
 // Connect DB
 db.connect();
@@ -38,12 +37,12 @@ route(app);
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: process.env.URL_FONTEND,
     methods: ["GET", "POST"],
   },
 });
-
-initSocket(io);
+// Đính đối tượng socket.io vào ứng dụng Express
+app.set("socket", io);
 
 server.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
