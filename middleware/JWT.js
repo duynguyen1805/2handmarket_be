@@ -14,17 +14,59 @@ const createJWT = (payload) => {
 
 const verify_token = (token) => {
   let key = process.env.JWT_SECRET;
-  let data = null;
+  let decoded = null;
   try {
-    let decode = jwt.verify(token, key);
-    data = decode;
+    decoded = jwt.verify(token, key);
   } catch (error) {
     console.log("Lỗi verify JWT: ", error);
   }
-  return data;
+  return decoded;
+};
+
+const check_user_login = (req, res, next) => {
+  let cookies = req.cookies;
+  // console.log("check cookies: ", cookies.jwt_token);
+  if (cookies && cookies.jwt_token) {
+    let decoded = verify_token(cookies.jwt_token);
+    if (decoded) {
+      req.user = decoded;
+      next();
+    } else {
+      return res.status(401).json({
+        errorCode: 401,
+        message: "Cần đăng nhập trên truy cập",
+      });
+    }
+  } else {
+    return res.status(401).json({
+      errorCode: 401,
+      message: "Cần đăng nhập trên truy cập",
+    });
+  }
+};
+
+const check_user_permission = (req, res, next) => {
+  if (req.user) {
+    let role = req.user.role;
+    if (role && role == "Admin") {
+      next();
+    } else {
+      return res.status(403).json({
+        error: 403,
+        message: "Không có quyền truy cập tài nguyên này",
+      });
+    }
+  } else {
+    return res.status(401).json({
+      error: 401,
+      message: "Cần đăng nhập trên truy cập",
+    });
+  }
 };
 
 module.exports = {
   createJWT,
   verify_token,
+  check_user_login,
+  check_user_permission,
 };

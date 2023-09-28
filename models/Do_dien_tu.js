@@ -125,6 +125,8 @@ const Do_dien_tu = new Schema(
       type: String,
       require: false,
     },
+
+    // expireAt: { type: Date, default: Date.now, index: { expires: "60s" } },
   },
   {
     timestamps: true,

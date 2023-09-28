@@ -57,6 +57,9 @@ class AdminController {
     const account = req.body.account;
     const password = req.body.password;
     // console.log("req.body", req.body);
+    // Thiết lập cookie với tên "token" và giá trị là token
+    // res.cookie("token", "test", { httpOnly: true });
+
     if (!account || !password) {
       return res.status(200).json({
         errCode: 1,
@@ -75,6 +78,17 @@ class AdminController {
             avatar: user.img,
             role: user.role,
           });
+          let token_1 = createJWT({
+            _id: user._id,
+            name: user.name,
+            account: user.account,
+            address: user.address,
+            role: user.role,
+          });
+
+          // res.cookie("jwt_token", `${token_1}`, { httpOnly: true });
+          res.cookie("jwt_token", `${token_1}`);
+
           return res.status(200).json({
             errCode: 0,
             message: "Đăng nhập thành công",
@@ -393,7 +407,7 @@ class AdminController {
     }
   };
 
-  getProduct_Dohoctap = async (req, res, next) => {
+  get_Tindang_Dohoctap = async (req, res, next) => {
     //type: giaotrinh, sachthamkhao, other_hoctap
     const { type, soluong, trangthai, pagehientai } = req.body;
     const soluong_int = parseInt(soluong, 10); // ép kiểu xài postman
@@ -497,7 +511,7 @@ class AdminController {
             },
           ];
         }
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Hoc_tap.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -573,7 +587,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Hoc_tap.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -633,7 +647,7 @@ class AdminController {
       });
     }
   };
-  getProduct_Dodientu = async (req, res, next) => {
+  get_Tindang_Dodientu = async (req, res, next) => {
     const {
       type,
       hang,
@@ -846,7 +860,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Do_dien_tu.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -926,7 +940,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Do_dien_tu.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -1007,7 +1021,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Do_dien_tu.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -1085,7 +1099,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Do_dien_tu.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -1160,7 +1174,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Do_dien_tu.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -1234,7 +1248,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Do_dien_tu.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -1308,7 +1322,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Do_dien_tu.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -1382,7 +1396,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Do_dien_tu.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -1428,7 +1442,7 @@ class AdminController {
       });
     }
   };
-  getProduct_Phuongtien = async (req, res, next) => {
+  get_Tindang_Phuongtien = async (req, res, next) => {
     //type: oto, xemay, xetai, xedien, xedap, phutung
     //hang: honda, yamaha, ....
     //: phutungxemay, phutungoto
@@ -1609,7 +1623,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Phuong_tien.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -1685,7 +1699,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Phuong_tien.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -1760,7 +1774,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Phuong_tien.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -1835,7 +1849,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Phuong_tien.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -1909,7 +1923,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Phuong_tien.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -1982,7 +1996,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Phuong_tien.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -2028,7 +2042,7 @@ class AdminController {
       });
     }
   };
-  getProduct_Donoithat = async (req, res, next) => {
+  get_Tindang_Donoithat = async (req, res, next) => {
     //type: banghe, tuke, giuong, bep, dungcubep, quat, den
     const { type, soluong, trangthai, pagehientai } = req.body;
     const soluong_int = parseInt(soluong, 10); // ép kiểu xài postman
@@ -2202,7 +2216,7 @@ class AdminController {
       });
     }
   };
-  getProduct_Dienlanh = async (req, res, next) => {
+  get_Tindang_Dienlanh = async (req, res, next) => {
     //type: tulanh, maylanh, maygiat
     //hang: toshiba, samsung,...
     const {
@@ -2363,7 +2377,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Dien_lanh.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -2437,7 +2451,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Dien_lanh.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -2512,7 +2526,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Dien_lanh.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -2558,7 +2572,7 @@ class AdminController {
       });
     }
   };
-  getProduct_Docanhan = async (req, res, next) => {
+  get_Tindang_Docanhan = async (req, res, next) => {
     //type: quanao, dongho, giaydep, nuochoa, balo, other
     const { type, soluong, trangthai, pagehientai, chogioitinh } = req.body;
     const soluong_int = parseInt(soluong, 10); // ép kiểu xài postman
@@ -2625,7 +2639,7 @@ class AdminController {
             },
           ];
         }
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Do_ca_nhan.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -2696,7 +2710,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Do_ca_nhan.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -2741,7 +2755,7 @@ class AdminController {
       });
     }
   };
-  getProduct_Dogiaitri = async (req, res, next) => {
+  get_Tindang_Dogiaitri = async (req, res, next) => {
     //type: nhaccu, sach, dothethao, thietbichoigame, other
     const { type, soluong, trangthai, pagehientai } = req.body;
     const soluong_int = parseInt(soluong, 10); // ép kiểu xài postman
@@ -2807,7 +2821,7 @@ class AdminController {
             },
           ];
         }
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Do_giai_tri.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -2877,7 +2891,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Do_giai_tri.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -2922,7 +2936,7 @@ class AdminController {
       });
     }
   };
-  getProduct_Thucung = async (req, res, next) => {
+  get_Tindang_Thucung = async (req, res, next) => {
     //type: cho, meo, ca, other
     const { type, soluong, trangthai, pagehientai } = req.body;
     const soluong_int = parseInt(soluong, 10); // ép kiểu xài postman
@@ -2988,7 +3002,7 @@ class AdminController {
             },
           ];
         }
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Thu_cung.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -3058,7 +3072,7 @@ class AdminController {
             $limit: soluong_int,
           },
         ];
-        // promise để đếm số lượng dựa trên option
+        // promise để đếm số lượng dựa trên filter
         const countDocumentsPromise = new Promise((resolve, reject) => {
           Thu_cung.countDocuments(filter)
             .then((totalCount) => resolve(totalCount))
@@ -3103,7 +3117,7 @@ class AdminController {
       });
     }
   };
-  getProductbyId = async (req, res, next) => {
+  get_TindangbyId = async (req, res, next) => {
     // type: dienthoai, laptop,... or oto, xemay,...or banghe, tuke,...
     const { type, id, id_nguoidung } = req.body;
     const validTypes_dohoctap = ["giaotrinh", "sachthamkhao", "other_hoctap"];
@@ -3392,7 +3406,7 @@ class AdminController {
     }
   };
   // Cập nhật trạng thái duyệt tin trangthai:
-  // (1: doiduyet, 2: daduyet, 3: antin(kem lido) )
+  // (1: doiduyet, 2: daduyet, 3: admintuchoi(kem lido), 4: antin )
   updateTrangthaiDuyettin = async (req, res, next) => {
     const { id, typecollection, lydoantin } = req.body;
     if (id && typecollection) {
@@ -4371,9 +4385,8 @@ class AdminController {
             });
           }
         }
-
-        if (result.length === 0) {
-          res.status(404).json({
+        if (result.length == 0) {
+          res.status(200).json({
             errCode: 1,
             message: "Không tìm thấy kết quả phù hợp",
           });
@@ -4387,12 +4400,118 @@ class AdminController {
       } catch (error) {
         console.error(error);
         res.status(500).json({
-          errCode: 1,
+          errCode: 2,
           message: "Lỗi khi tìm kiếm",
         });
       }
     } else {
       res.status(400).json({
+        errCode: 1,
+        message: "Không có keyword",
+      });
+    }
+  };
+
+  //sort Tin ưu tiên ở fontend
+  Search_tindang_header = async (req, res, next) => {
+    const { keyword, pagehientai, soluong } = req.body;
+    const soluong_int = parseInt(soluong, 10); // ép kiểu xài postman
+    if (keyword) {
+      try {
+        const [
+          search_Hoctap,
+          search_Dodientu,
+          search_Phuongtien,
+          search_Donoithat,
+          search_Dienlanh,
+          search_Docanhan,
+          search_Dogiaitri,
+          search_Thucung,
+        ] = await Promise.all([
+          Hoc_tap.find({
+            tieude: { $regex: keyword, $options: "i" },
+            trangthai: 2,
+          }),
+          Do_dien_tu.find({
+            $or: [
+              { tieude: { $regex: keyword, $options: "i" } },
+              { dongmay: { $regex: keyword, $options: "i" } },
+              { hang: { $regex: keyword, $options: "i" } },
+            ],
+            trangthai: 2,
+          }),
+          Phuong_tien.find({
+            $or: [
+              { tieude: { $regex: keyword, $options: "i" } },
+              { dongxe: { $regex: keyword, $options: "i" } },
+              { hang: { $regex: keyword, $options: "i" } },
+            ],
+            trangthai: 2,
+          }),
+          Do_noi_that.find({
+            tieude: { $regex: keyword, $options: "i" },
+            trangthai: 2,
+          }),
+          Dien_lanh.find({
+            $or: [
+              { tieude: { $regex: keyword, $options: "i" } },
+              { hang: { $regex: keyword, $options: "i" } },
+            ],
+            trangthai: 2,
+          }),
+          Do_ca_nhan.find({
+            tieude: { $regex: keyword, $options: "i" },
+            trangthai: 2,
+          }),
+          Do_giai_tri.find({
+            tieude: { $regex: keyword, $options: "i" },
+            trangthai: 2,
+          }),
+          Thu_cung.find({
+            tieude: { $regex: keyword, $options: "i" },
+            trangthai: 2,
+          }),
+        ]);
+        const result = [
+          ...search_Hoctap,
+          ...search_Dodientu,
+          ...search_Phuongtien,
+          ...search_Donoithat,
+          ...search_Dienlanh,
+          ...search_Docanhan,
+          ...search_Dogiaitri,
+          ...search_Thucung,
+        ];
+        // Tính toán các thông tin liên quan đến phân trang
+        const startIndex = (pagehientai - 1) * soluong_int;
+        const endIndex = pagehientai * soluong_int;
+        const totalItems = result.length;
+        const totalPages = Math.ceil(totalItems / soluong_int);
+        // Trích xuất các mục cho trang hiện tại từ result
+        const itemsOnPage = result.slice(startIndex, endIndex);
+
+        if (result.length == 0) {
+          res.status(200).json({
+            errCode: 1,
+            message: "Không tìm thấy kết quả phù hợp",
+          });
+        } else {
+          res.status(200).json({
+            errCode: 0,
+            message: "Tìm kiếm thành công",
+            resultSearch: itemsOnPage,
+            totalPages: totalPages,
+          });
+        }
+      } catch (error) {
+        console.log(error);
+        res.status(500).json({
+          errCode: 2,
+          message: "Lỗi tìm kiếm find collection",
+        });
+      }
+    } else {
+      res.status(200).json({
         errCode: 1,
         message: "Không có keyword",
       });

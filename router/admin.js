@@ -1,92 +1,88 @@
 var express = require("express");
 var router = express.Router();
 const adminController = require("../controllers/adminController");
+const {
+  check_user_login,
+  check_user_permission,
+} = require("../middleware/JWT");
 
-// Get
-// Lấy tất cả người dùng
-router.get("/admin/get-user", adminController.getAllUser);
+// Login
+router.post("/login", adminController.login);
+// Register
+router.post("/register-user", adminController.registerUser);
 // // Lấy tin đăng cho homepage
-router.get("/admin/get-all-collection", adminController.getALL_collection);
-// Lấy tin đăng cho homepage
-router.get(
-  "/admin/get-all-soluongtin",
-  adminController.get_soluongtin_moidanhmuc
-);
-//Post
-// xử lý input Search tìm sản phẩm
-router.post(
-  "/admin/search-tindang-daduyet",
-  adminController.Search_tindang_daduyet
-);
+router.get("/get-all-collection", adminController.getALL_collection);
+// Lấy số lượng tin mỗi collection
+router.get("/get-all-soluongtin", adminController.get_soluongtin_moidanhmuc);
 // Lấy tất cả sản phẩm trong collection
+router.post("/get-tin-dang-do-hoc-tap", adminController.get_Tindang_Dohoctap);
+router.post("/get-tin-dang-do-dien-tu", adminController.get_Tindang_Dodientu);
 router.post(
-  "/admin/get-product-do-hoc-tap",
-  adminController.getProduct_Dohoctap
+  "/get-tin-dang-phuong-tien",
+  adminController.get_Tindang_Phuongtien
 );
-router.post(
-  "/admin/get-product-do-dien-tu",
-  adminController.getProduct_Dodientu
-);
-router.post(
-  "/admin/get-product-phuong-tien",
-  adminController.getProduct_Phuongtien
-);
-router.post(
-  "/admin/get-product-do-noi-that",
-  adminController.getProduct_Donoithat
-);
-router.post(
-  "/admin/get-product-dien-lanh",
-  adminController.getProduct_Dienlanh
-);
-router.post(
-  "/admin/get-product-do-ca-nhan",
-  adminController.getProduct_Docanhan
-);
-router.post(
-  "/admin/get-product-do-giai-tri",
-  adminController.getProduct_Dogiaitri
-);
-router.post("/admin/get-product-thu-cung", adminController.getProduct_Thucung);
+router.post("/get-tin-dang-do-noi-that", adminController.get_Tindang_Donoithat);
+router.post("/get-tin-dang-dien-lanh", adminController.get_Tindang_Dienlanh);
+router.post("/get-tin-dang-do-ca-nhan", adminController.get_Tindang_Docanhan);
+router.post("/get-tin-dang-do-giai-tri", adminController.get_Tindang_Dogiaitri);
+router.post("/get-tin-dang-thu-cung", adminController.get_Tindang_Thucung);
 // Lấy sản phẩm cụ thể theo mã sản phẩm
-router.post("/admin/get-product-by-id", adminController.getProductbyId);
-// // Lấy 1 người dùng
-router.post("/admin/get-user-by-id", adminController.getUserbyId);
-// // Lấy tin đăng của 1 người dùng
-router.post(
-  "/admin/get-tindang-by-id-user",
-  adminController.getTindangbyIdUser
-);
+router.post("/get-tin-dang-by-id", adminController.get_TindangbyId);
+// Lấy tin đăng của 1 người dùng
+router.post("/get-tin-dang-by-id-user", adminController.getTindangbyIdUser);
+// Search tin đăng đã duyệt
+router.post("/search-tindang-daduyet", adminController.Search_tindang_daduyet);
+// Search tin đăng trên Header
+router.post("/search-tindang-header", adminController.Search_tindang_header);
 
-// //Tạo tất cả sản phẩm chung 1 collection Product
+// CẦN LOGIN ---------------------------------------------------------
+// Lấy 1 người dùng
+router.post("/get-user-by-id", check_user_login, adminController.getUserbyId);
+// //Tạo tin đăng
 router.post(
-  "/admin/create-dang-tin/:id_user-:type",
+  "/create-dang-tin/:id_user-:type",
+  check_user_login,
   adminController.create_Dangtin
 );
-
-// // Cập nhật trạng thái đơn hàng
 router.put(
-  "/admin/update-status-tindang",
-  adminController.updateTrangthaiDuyettin
-);
-router.put(
-  "/admin/update-status-antin-by-user",
+  "/update-status-antin-by-user",
+  check_user_login,
   adminController.updateTrangthai_Antin_byuser
 );
+router.delete(
+  "/admin/delete-tindang/:type/:id",
+  check_user_login,
+  adminController.deleteBaidang
+);
 router.put(
-  "/admin/update-status-thanhtoan",
+  "/update-status-thanhtoan",
+  check_user_login,
   adminController.updateTrangthai_thanhtoan
 );
-// // delete
-// // XÓa 1 người dùng, 1 sản phẩm
-router.delete("/admin/delete-user/:id", adminController.deleteUser);
-router.delete("/admin/delete-tindang/:type/:id", adminController.deleteBaidang);
+// Cập nhật thông tin người dùng
+router.put("/update-user", check_user_login, adminController.updateUser);
 
-// // Login
-router.post("/login", adminController.login);
-// // Tạo 1 người dùng mới
-router.post("/admin/register-user", adminController.registerUser); // path
-// // Cập nhật thông tin người dùng
-router.put("/admin/update-user", adminController.updateUser);
+// CẦN THÊM ROLE ADMIN ------------------------------------------------
+// Lấy tất cả người dùng
+router.get(
+  "/admin/get-user",
+  check_user_login,
+  check_user_permission,
+  adminController.getAllUser
+);
+// Cập nhật trạng thái đơn hàng
+router.put(
+  "/admin/update-status-tindang",
+  check_user_login,
+  check_user_permission,
+  adminController.updateTrangthaiDuyettin
+);
+// XÓa 1 người dùng, 1 tin đăng
+router.delete(
+  "/admin/delete-user/:id",
+  check_user_login,
+  check_user_permission,
+  adminController.deleteUser
+);
 
 module.exports = router;

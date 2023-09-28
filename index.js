@@ -6,9 +6,9 @@ const port = process.env.PORT;
 const route = require("./router");
 const db = require("./config/db");
 const methodOverride = require("method-override");
-// const Middleware = require('./middleware/Middleware')
 const cors = require("cors");
 var bodyParser = require("body-parser");
+var cookieParser = require("cookie-parser");
 
 const http = require("http");
 const { Server } = require("socket.io");
@@ -17,7 +17,20 @@ const { Server } = require("socket.io");
 db.connect();
 const app = express();
 
-app.use(cors());
+const allowedOrigins = process.env.URL_FONTEND.split(",");
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 app.use(
   express.urlencoded({
     extended: true,
@@ -31,6 +44,9 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 // HTTP logger
 app.use(morgan("combined"));
 // Template engine
+
+// config cookieparser
+app.use(cookieParser());
 
 route(app);
 

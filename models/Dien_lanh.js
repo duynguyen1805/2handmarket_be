@@ -72,6 +72,8 @@ const Dien_lanh = new Schema(
       type: String,
       require: false,
     },
+
+    // expireAt: { type: Date, default: Date.now, index: { expires: "60s" } },
   },
   {
     timestamps: true,
