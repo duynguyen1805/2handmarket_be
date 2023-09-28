@@ -53,8 +53,19 @@ const Do_ca_nhan = new Schema(
       type: String,
       require: false,
     },
-
-    // expireAt: { type: Date, default: Date.now, index: { expires: "60s" } },
+    ngayduyettin: {
+      type: Date,
+      require: false,
+    },
+    // expireAt: { type: Date, default: Date.now, index: { expires: "30d" } },
+    expires_tindang: {
+      type: Date,
+      require: false,
+    },
+    expires_tinbituchoi_tinan: {
+      type: Date,
+      require: false,
+    },
   },
   {
     timestamps: true,

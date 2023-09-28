@@ -330,32 +330,38 @@ class AdminController {
     try {
       //moi collection lay 3 tin moi nhat
       const all_collection = await Promise.all([
-        Hoc_tap.find({ trangthai: 2 }).sort({ updatedAt: -1 }).limit(4).exec(),
+        Hoc_tap.find({ trangthai: 2 })
+          .sort({ ngayduyettin: -1 })
+          .limit(4)
+          .exec(),
         Phuong_tien.find({ trangthai: 2 })
-          .sort({ updatedAt: -1 })
+          .sort({ ngayduyettin: -1 })
           .limit(4)
           .exec(),
         Do_dien_tu.find({ trangthai: 2 })
-          .sort({ updatedAt: -1 })
+          .sort({ ngayduyettin: -1 })
           .limit(4)
           .exec(),
         Do_noi_that.find({ trangthai: 2 })
-          .sort({ updatedAt: -1 })
+          .sort({ ngayduyettin: -1 })
           .limit(4)
           .exec(),
         Dien_lanh.find({ trangthai: 2 })
-          .sort({ updatedAt: -1 })
+          .sort({ ngayduyettin: -1 })
           .limit(4)
           .exec(),
         Do_ca_nhan.find({ trangthai: 2 })
-          .sort({ updatedAt: -1 })
+          .sort({ ngayduyettin: -1 })
           .limit(4)
           .exec(),
         Do_giai_tri.find({ trangthai: 2 })
-          .sort({ updatedAt: -1 })
+          .sort({ ngayduyettin: -1 })
           .limit(4)
           .exec(),
-        Thu_cung.find({ trangthai: 2 }).sort({ updatedAt: -1 }).limit(4).exec(),
+        Thu_cung.find({ trangthai: 2 })
+          .sort({ ngayduyettin: -1 })
+          .limit(4)
+          .exec(),
       ]);
       // merge chung 1 [] sort bên FE
       const merged_Allcollection = [].concat(...all_collection);
@@ -500,7 +506,7 @@ class AdminController {
             {
               $sort: {
                 tralendauList: -1,
-                updatedAt: -1,
+                ngayduyettin: -1,
               },
             },
             {
@@ -577,7 +583,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -685,7 +691,7 @@ class AdminController {
           "linhkien",
         ];
         const options = {
-          sort: { updatedAt: -1 },
+          sort: { ngayduyettin: -1 },
           limit: soluong_int,
           skip: (pagehientai - 1) * soluong_int, // Tính vị trí bắt đầu lấy dữ liệu
         };
@@ -729,7 +735,7 @@ class AdminController {
               },
               {
                 $sort: {
-                  updatedAt: -1,
+                  ngayduyettin: -1,
                 },
               },
               {
@@ -746,7 +752,7 @@ class AdminController {
               },
               {
                 $sort: {
-                  updatedAt: -1,
+                  ngayduyettin: -1,
                 },
               },
               {
@@ -850,7 +856,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -930,7 +936,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -1011,7 +1017,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -1089,7 +1095,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -1164,7 +1170,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -1238,7 +1244,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -1312,7 +1318,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -1386,7 +1392,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -1477,7 +1483,7 @@ class AdminController {
           "phutung",
         ];
         const options = {
-          sort: { updatedAt: -1 },
+          sort: { ngayduyettin: -1 },
           limit: soluong_int,
           skip: (pagehientai - 1) * soluong_int, // Tính vị trí bắt đầu lấy dữ liệu
         };
@@ -1522,7 +1528,7 @@ class AdminController {
               },
               {
                 $sort: {
-                  updatedAt: -1,
+                  ngayduyettin: -1,
                 },
               },
               {
@@ -1539,7 +1545,7 @@ class AdminController {
               },
               {
                 $sort: {
-                  updatedAt: -1,
+                  ngayduyettin: -1,
                 },
               },
               {
@@ -1613,7 +1619,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -1689,7 +1695,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -1764,7 +1770,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -1839,7 +1845,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -1913,7 +1919,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -1986,7 +1992,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -2097,7 +2103,7 @@ class AdminController {
             {
               $sort: {
                 tralendauList: -1,
-                updatedAt: -1,
+                ngayduyettin: -1,
               },
             },
             {
@@ -2164,7 +2170,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -2236,7 +2242,7 @@ class AdminController {
       if (type === "ALL" && role !== "Admin") {
         const typesArray = ["tulanh", "maylanh", "maygiat"];
         const options = {
-          sort: { updatedAt: -1 },
+          sort: { ngayduyettin: -1 },
           limit: soluong_int,
           skip: (pagehientai - 1) * soluong_int, // Tính vị trí bắt đầu lấy dữ liệu
         };
@@ -2279,7 +2285,7 @@ class AdminController {
               },
               {
                 $sort: {
-                  updatedAt: -1,
+                  ngayduyettin: -1,
                 },
               },
               {
@@ -2296,7 +2302,7 @@ class AdminController {
               },
               {
                 $sort: {
-                  updatedAt: -1,
+                  ngayduyettin: -1,
                 },
               },
               {
@@ -2367,7 +2373,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -2441,7 +2447,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -2516,7 +2522,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -2628,7 +2634,7 @@ class AdminController {
             {
               $sort: {
                 tralendauList: -1,
-                updatedAt: -1,
+                ngayduyettin: -1,
               },
             },
             {
@@ -2700,7 +2706,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -2810,7 +2816,7 @@ class AdminController {
             {
               $sort: {
                 tralendauList: -1,
-                updatedAt: -1,
+                ngayduyettin: -1,
               },
             },
             {
@@ -2881,7 +2887,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -2991,7 +2997,7 @@ class AdminController {
             {
               $sort: {
                 tralendauList: -1,
-                updatedAt: -1,
+                ngayduyettin: -1,
               },
             },
             {
@@ -3062,7 +3068,7 @@ class AdminController {
           {
             $sort: {
               tralendauList: -1,
-              updatedAt: -1,
+              ngayduyettin: -1,
             },
           },
           {
@@ -3414,6 +3420,10 @@ class AdminController {
         if (typecollection === "hoctap") {
           let tindang = await Hoc_tap.findOne({ _id: id });
           tindang.trangthai = tindang.trangthai += 1;
+          const now = new Date();
+          tindang.ngayduyettin = now;
+          // tindang.expires_tindang = new Date();
+          // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
           if (tindang) {
             Hoc_tap.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3429,6 +3439,10 @@ class AdminController {
         if (typecollection === "dodientu") {
           let tindang = await Do_dien_tu.findOne({ _id: id });
           tindang.trangthai = tindang.trangthai += 1;
+          const now = new Date();
+          tindang.ngayduyettin = now;
+          // tindang.expires_tindang = new Date();
+          // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
           if (tindang) {
             Do_dien_tu.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3444,6 +3458,10 @@ class AdminController {
         if (typecollection === "phuongtien") {
           let tindang = await Phuong_tien.findOne({ _id: id });
           tindang.trangthai = tindang.trangthai += 1;
+          const now = new Date();
+          tindang.ngayduyettin = now;
+          // tindang.expires_tindang = new Date();
+          // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
           if (tindang) {
             Phuong_tien.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3459,6 +3477,10 @@ class AdminController {
         if (typecollection === "donoithat") {
           let tindang = await Do_noi_that.findOne({ _id: id });
           tindang.trangthai = tindang.trangthai += 1;
+          const now = new Date();
+          tindang.ngayduyettin = now;
+          // tindang.expires_tindang = new Date();
+          // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
           if (tindang) {
             Do_noi_that.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3474,6 +3496,10 @@ class AdminController {
         if (typecollection === "dienlanh") {
           let tindang = await Dien_lanh.findOne({ _id: id });
           tindang.trangthai = tindang.trangthai += 1;
+          const now = new Date();
+          tindang.ngayduyettin = now;
+          // tindang.expires_tindang = new Date();
+          // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
           if (tindang) {
             Dien_lanh.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3489,6 +3515,10 @@ class AdminController {
         if (typecollection === "dodungcanhan") {
           let tindang = await Do_ca_nhan.findOne({ _id: id });
           tindang.trangthai = tindang.trangthai += 1;
+          const now = new Date();
+          tindang.ngayduyettin = now;
+          // tindang.expires_tindang = new Date();
+          // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
           if (tindang) {
             Do_ca_nhan.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3504,6 +3534,10 @@ class AdminController {
         if (typecollection === "dogiaitri") {
           let tindang = await Do_giai_tri.findOne({ _id: id });
           tindang.trangthai = tindang.trangthai += 1;
+          const now = new Date();
+          tindang.ngayduyettin = now;
+          // tindang.expires_tindang = new Date();
+          // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
           if (tindang) {
             Do_giai_tri.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3519,6 +3553,10 @@ class AdminController {
         if (typecollection === "thucung") {
           let tindang = await Thu_cung.findOne({ _id: id });
           tindang.trangthai = tindang.trangthai += 1;
+          const now = new Date();
+          tindang.ngayduyettin = now;
+          // tindang.expires_tindang = new Date();
+          // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
           if (tindang) {
             Thu_cung.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3536,12 +3574,16 @@ class AdminController {
           let tindang = await Hoc_tap.findOne({ _id: id });
           tindang.trangthai = 3;
           tindang.lydoantin = lydoantin;
+          const now = new Date();
+          tindang.expires_tinbituchoi_tinan = new Date(
+            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
+          );
           if (tindang) {
             Hoc_tap.updateOne({ _id: id }, tindang)
               .then(() => {
                 return res.json({
                   errCode: 0,
-                  message: "Update trạng thái tin đăng thành công",
+                  message: "Tin không được duyệt, đã ẩn tin thành công",
                   trangthai: tindang.trangthai,
                 });
               })
@@ -3552,6 +3594,10 @@ class AdminController {
           let tindang = await Do_dien_tu.findOne({ _id: id });
           tindang.trangthai = 3;
           tindang.lydoantin = lydoantin;
+          const now = new Date();
+          tindang.expires_tinbituchoi_tinan = new Date(
+            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
+          );
           if (tindang) {
             Do_dien_tu.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3568,12 +3614,16 @@ class AdminController {
           let tindang = await Phuong_tien.findOne({ _id: id });
           tindang.trangthai = 3;
           tindang.lydoantin = lydoantin;
+          const now = new Date();
+          tindang.expires_tinbituchoi_tinan = new Date(
+            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
+          );
           if (tindang) {
             Phuong_tien.updateOne({ _id: id }, tindang)
               .then(() => {
                 return res.json({
                   errCode: 0,
-                  message: "Update trạng thái tin đăng thành công",
+                  message: "Tin không được duyệt, đã ẩn tin thành công",
                   trangthai: tindang.trangthai,
                 });
               })
@@ -3584,12 +3634,16 @@ class AdminController {
           let tindang = await Do_noi_that.findOne({ _id: id });
           tindang.trangthai = 3;
           tindang.lydoantin = lydoantin;
+          const now = new Date();
+          tindang.expires_tinbituchoi_tinan = new Date(
+            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
+          );
           if (tindang) {
             Do_noi_that.updateOne({ _id: id }, tindang)
               .then(() => {
                 return res.json({
                   errCode: 0,
-                  message: "Update trạng thái tin đăng thành công",
+                  message: "Tin không được duyệt, đã ẩn tin thành công",
                   trangthai: tindang.trangthai,
                 });
               })
@@ -3600,12 +3654,16 @@ class AdminController {
           let tindang = await Dien_lanh.findOne({ _id: id });
           tindang.trangthai = 3;
           tindang.lydoantin = lydoantin;
+          const now = new Date();
+          tindang.expires_tinbituchoi_tinan = new Date(
+            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
+          );
           if (tindang) {
             Dien_lanh.updateOne({ _id: id }, tindang)
               .then(() => {
                 return res.json({
                   errCode: 0,
-                  message: "Update trạng thái tin đăng thành công",
+                  message: "Tin không được duyệt, đã ẩn tin thành công",
                   trangthai: tindang.trangthai,
                 });
               })
@@ -3616,12 +3674,16 @@ class AdminController {
           let tindang = await Do_ca_nhan.findOne({ _id: id });
           tindang.trangthai = 3;
           tindang.lydoantin = lydoantin;
+          const now = new Date();
+          tindang.expires_tinbituchoi_tinan = new Date(
+            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
+          );
           if (tindang) {
             Do_ca_nhan.updateOne({ _id: id }, tindang)
               .then(() => {
                 return res.json({
                   errCode: 0,
-                  message: "Update trạng thái tin đăng thành công",
+                  message: "Tin không được duyệt, đã ẩn tin thành công",
                   trangthai: tindang.trangthai,
                 });
               })
@@ -3632,12 +3694,16 @@ class AdminController {
           let tindang = await Do_giai_tri.findOne({ _id: id });
           tindang.trangthai = 3;
           tindang.lydoantin = lydoantin;
+          const now = new Date();
+          tindang.expires_tinbituchoi_tinan = new Date(
+            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
+          );
           if (tindang) {
             Do_giai_tri.updateOne({ _id: id }, tindang)
               .then(() => {
                 return res.json({
                   errCode: 0,
-                  message: "Update trạng thái tin đăng thành công",
+                  message: "Tin không được duyệt, đã ẩn tin thành công",
                   trangthai: tindang.trangthai,
                 });
               })
@@ -3648,12 +3714,16 @@ class AdminController {
           let tindang = await Thu_cung.findOne({ _id: id });
           tindang.trangthai = 3;
           tindang.lydoantin = lydoantin;
+          const now = new Date();
+          tindang.expires_tinbituchoi_tinan = new Date(
+            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
+          );
           if (tindang) {
             Thu_cung.updateOne({ _id: id }, tindang)
               .then(() => {
                 return res.json({
                   errCode: 0,
-                  message: "Update trạng thái tin đăng thành công",
+                  message: "Tin không được duyệt, đã ẩn tin thành công",
                   trangthai: tindang.trangthai,
                 });
               })
@@ -3722,6 +3792,10 @@ class AdminController {
           let tindang = await Hoc_tap.findOne({ _id: id });
           tindang.trangthai = 4;
           tindang.lydoantin = lydoantin;
+          const now = new Date();
+          tindang.expires_tinbituchoi_tinan = new Date(
+            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
+          );
           if (tindang) {
             Hoc_tap.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3739,6 +3813,10 @@ class AdminController {
           let tindang = await Do_dien_tu.findOne({ _id: id });
           tindang.trangthai = 4;
           tindang.lydoantin = lydoantin;
+          const now = new Date();
+          tindang.expires_tinbituchoi_tinan = new Date(
+            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
+          );
           if (tindang) {
             Do_dien_tu.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3756,6 +3834,10 @@ class AdminController {
           let tindang = await Phuong_tien.findOne({ _id: id });
           tindang.trangthai = 4;
           tindang.lydoantin = lydoantin;
+          const now = new Date();
+          tindang.expires_tinbituchoi_tinan = new Date(
+            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
+          );
           if (tindang) {
             Phuong_tien.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3773,6 +3855,10 @@ class AdminController {
           let tindang = await Do_noi_that.findOne({ _id: id });
           tindang.trangthai = 4;
           tindang.lydoantin = lydoantin;
+          const now = new Date();
+          tindang.expires_tinbituchoi_tinan = new Date(
+            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
+          );
           if (tindang) {
             Do_noi_that.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3790,6 +3876,10 @@ class AdminController {
           let tindang = await Dien_lanh.findOne({ _id: id });
           tindang.trangthai = 4;
           tindang.lydoantin = lydoantin;
+          const now = new Date();
+          tindang.expires_tinbituchoi_tinan = new Date(
+            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
+          );
           if (tindang) {
             Dien_lanh.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3807,6 +3897,10 @@ class AdminController {
           let tindang = await Do_ca_nhan.findOne({ _id: id });
           tindang.trangthai = 4;
           tindang.lydoantin = lydoantin;
+          const now = new Date();
+          tindang.expires_tinbituchoi_tinan = new Date(
+            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
+          );
           if (tindang) {
             Do_ca_nhan.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3824,6 +3918,10 @@ class AdminController {
           let tindang = await Do_giai_tri.findOne({ _id: id });
           tindang.trangthai = 4;
           tindang.lydoantin = lydoantin;
+          const now = new Date();
+          tindang.expires_tinbituchoi_tinan = new Date(
+            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
+          );
           if (tindang) {
             Do_giai_tri.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3841,6 +3939,10 @@ class AdminController {
           let tindang = await Thu_cung.findOne({ _id: id });
           tindang.trangthai = 4;
           tindang.lydoantin = lydoantin;
+          const now = new Date();
+          tindang.expires_tinbituchoi_tinan = new Date(
+            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
+          );
           if (tindang) {
             Thu_cung.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3859,6 +3961,7 @@ class AdminController {
           let tindang = await Hoc_tap.findOne({ _id: id });
           tindang.trangthai = 2;
           tindang.lydoantin = "";
+          tindang.expires_tinbituchoi_tinan = null;
           if (tindang) {
             Hoc_tap.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3875,6 +3978,7 @@ class AdminController {
           let tindang = await Do_dien_tu.findOne({ _id: id });
           tindang.trangthai = 2;
           tindang.lydoantin = "";
+          tindang.expires_tinbituchoi_tinan = null;
           if (tindang) {
             Do_dien_tu.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3891,6 +3995,7 @@ class AdminController {
           let tindang = await Phuong_tien.findOne({ _id: id });
           tindang.trangthai = 2;
           tindang.lydoantin = "";
+          tindang.expires_tinbituchoi_tinan = null;
           if (tindang) {
             Phuong_tien.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3907,6 +4012,7 @@ class AdminController {
           let tindang = await Do_noi_that.findOne({ _id: id });
           tindang.trangthai = 2;
           tindang.lydoantin = "";
+          tindang.expires_tinbituchoi_tinan = null;
           if (tindang) {
             Do_noi_that.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3923,6 +4029,7 @@ class AdminController {
           let tindang = await Dien_lanh.findOne({ _id: id });
           tindang.trangthai = 2;
           tindang.lydoantin = "";
+          tindang.expires_tinbituchoi_tinan = null;
           if (tindang) {
             Dien_lanh.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3939,6 +4046,7 @@ class AdminController {
           let tindang = await Do_ca_nhan.findOne({ _id: id });
           tindang.trangthai = 2;
           tindang.lydoantin = "";
+          tindang.expires_tinbituchoi_tinan = null;
           if (tindang) {
             Do_ca_nhan.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3955,6 +4063,7 @@ class AdminController {
           let tindang = await Do_giai_tri.findOne({ _id: id });
           tindang.trangthai = 2;
           tindang.lydoantin = "";
+          tindang.expires_tinbituchoi_tinan = null;
           if (tindang) {
             Do_giai_tri.updateOne({ _id: id }, tindang)
               .then(() => {
@@ -3971,6 +4080,7 @@ class AdminController {
           let tindang = await Thu_cung.findOne({ _id: id });
           tindang.trangthai = 2;
           tindang.lydoantin = "";
+          tindang.expires_tinbituchoi_tinan = null;
           if (tindang) {
             Thu_cung.updateOne({ _id: id }, tindang)
               .then(() => {
