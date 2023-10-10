@@ -56,10 +56,6 @@ class AdminController {
   login = async (req, res, next) => {
     const account = req.body.account;
     const password = req.body.password;
-    // console.log("req.body", req.body);
-    // Thiết lập cookie với tên "token" và giá trị là token
-    // res.cookie("token", "test", { httpOnly: true });
-
     if (!account || !password) {
       return res.status(200).json({
         errCode: 1,
@@ -167,9 +163,29 @@ class AdminController {
           }
           User.updateOne({ account: req.body.account }, req.body)
             .then(() => {
+              // let token = createJWT({
+              //   _id: user._id,
+              //   name: user.name,
+              //   account: user.account,
+              //   address: user.address,
+              //   avatar: user.img,
+              //   role: user.role,
+              // });
+              // let token_1 = createJWT({
+              //   _id: user._id,
+              //   name: user.name,
+              //   account: user.account,
+              //   address: user.address,
+              //   role: user.role,
+              // });
+
+              // // res.cookie("jwt_token", `${token_1}`, { httpOnly: true });
+              // res.cookie("jwt_token", `${token_1}`);
+
               return res.json({
                 errCode: 0,
                 message: `Cập nhật thông tin người dùng thành công.`,
+                // access_token: token,
               });
             })
             .catch(next);
@@ -4153,6 +4169,9 @@ class AdminController {
       if (validTypes_dohoctap.includes(typeTindang)) {
         let tindang = await Hoc_tap.findOne({ _id: id });
         tindang.trangthaithanhtoan = 1;
+        tindang.thoiGianKetThucQuangCao = new Date(
+          Date.now() + 1000 * 60 * 60 * 24 * 7
+        ); //7d
         if (tindang) {
           Hoc_tap.updateOne({ _id: id }, tindang)
             .then(() => {
@@ -4168,6 +4187,9 @@ class AdminController {
       if (validTypes_dodientu.includes(typeTindang)) {
         let tindang = await Do_dien_tu.findOne({ _id: id });
         tindang.trangthaithanhtoan = 1;
+        tindang.thoiGianKetThucQuangCao = new Date(
+          Date.now() + 1000 * 60 * 60 * 24 * 7
+        ); //7d
         if (tindang) {
           Do_dien_tu.updateOne({ _id: id }, tindang)
             .then(() => {
@@ -4183,6 +4205,9 @@ class AdminController {
       if (validTypes_phuongtien.includes(typeTindang)) {
         let tindang = await Phuong_tien.findOne({ _id: id });
         tindang.trangthaithanhtoan = 1;
+        tindang.thoiGianKetThucQuangCao = new Date(
+          Date.now() + 1000 * 60 * 60 * 24 * 7
+        ); //7d
         if (tindang) {
           Phuong_tien.updateOne({ _id: id }, tindang)
             .then(() => {
@@ -4198,6 +4223,9 @@ class AdminController {
       if (validTypes_donoithat.includes(typeTindang)) {
         let tindang = await Do_noi_that.findOne({ _id: id });
         tindang.trangthaithanhtoan = 1;
+        tindang.thoiGianKetThucQuangCao = new Date(
+          Date.now() + 1000 * 60 * 60 * 24 * 7
+        ); //7d
         if (tindang) {
           Do_noi_that.updateOne({ _id: id }, tindang)
             .then(() => {
@@ -4213,6 +4241,9 @@ class AdminController {
       if (validTypes_dienlanh.includes(typeTindang)) {
         let tindang = await Dien_lanh.findOne({ _id: id });
         tindang.trangthaithanhtoan = 1;
+        tindang.thoiGianKetThucQuangCao = new Date(
+          Date.now() + 1000 * 60 * 60 * 24 * 7
+        ); //7d
         if (tindang) {
           Dien_lanh.updateOne({ _id: id }, tindang)
             .then(() => {
@@ -4228,6 +4259,9 @@ class AdminController {
       if (validTypes_docanhan.includes(typeTindang)) {
         let tindang = await Do_ca_nhan.findOne({ _id: id });
         tindang.trangthaithanhtoan = 1;
+        tindang.thoiGianKetThucQuangCao = new Date(
+          Date.now() + 1000 * 60 * 60 * 24 * 7
+        ); //7d
         if (tindang) {
           Do_ca_nhan.updateOne({ _id: id }, tindang)
             .then(() => {
@@ -4243,6 +4277,9 @@ class AdminController {
       if (validTypes_dogiaitri.includes(typeTindang)) {
         let tindang = await Do_giai_tri.findOne({ _id: id });
         tindang.trangthaithanhtoan = 1;
+        tindang.thoiGianKetThucQuangCao = new Date(
+          Date.now() + 1000 * 60 * 60 * 24 * 7
+        ); //7d
         if (tindang) {
           Do_giai_tri.updateOne({ _id: id }, tindang)
             .then(() => {
@@ -4258,6 +4295,9 @@ class AdminController {
       if (validTypes_thucung.includes(typeTindang)) {
         let tindang = await Thu_cung.findOne({ _id: id });
         tindang.trangthaithanhtoan = 1;
+        tindang.thoiGianKetThucQuangCao = new Date(
+          Date.now() + 1000 * 60 * 60 * 24 * 7
+        ); //7d
         if (tindang) {
           Thu_cung.updateOne({ _id: id }, tindang)
             .then(() => {

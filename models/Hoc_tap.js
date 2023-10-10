@@ -59,12 +59,17 @@ const Do_hoc_tap = new Schema(
       type: Date,
       require: false,
     },
+    // để tự động xóa => filed phải có từ expires
     // expireAt: { type: Date, default: Date.now, index: { expires: "30d" } },
     expires_tindang: {
       type: Date,
       require: false,
     },
     expires_tinbituchoi_tinan: {
+      type: Date,
+      require: false,
+    },
+    thoiGianKetThucQuangCao: {
       type: Date,
       require: false,
     },
