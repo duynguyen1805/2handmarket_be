@@ -82,17 +82,11 @@ class AdminController {
             role: user.role,
           });
 
-          let allowedOrigins;
-          if (process.env.NODE_ENV === "development") {
-            // Lấy biến môi trường từ .env.local trong môi trường development
-            require("dotenv").config({ path: ".env" });
-            allowedOrigins = "localhost";
-          } else {
-            allowedOrigins = "twohandmarket-be.onrender.com";
-          }
+          let allowedOrigins = "twohandmarket-be.onrender.com";
+
           // res.cookie("jwt_token", `${token_1}`, { httpOnly: true });
           res.cookie("jwt_token", `${token_1}`, {
-            domain: allowedOrigins,
+            // domain: allowedOrigins,
             sameSite: "None",
             secure: true,
           });
