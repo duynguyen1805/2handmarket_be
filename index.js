@@ -63,8 +63,12 @@ route(app);
 // cấu hình socket push noti
 const server = http.createServer(app);
 const io = new Server(server, {
+  // cors: {
+  //   origin: process.env.URL_FONTEND,
+  //   methods: ["GET", "POST"],
+  // },
   cors: {
-    origin: process.env.URL_FONTEND,
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
   },
 });
