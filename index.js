@@ -33,7 +33,6 @@ if (process.env.NODE_ENV === "development") {
   require("dotenv").config({ path: ".env" });
   allowedOrigins = process.env.URL_FONTEND;
 } else {
-  // Lấy biến môi trường từ .env trong môi trường khác
   allowedOrigins = process.env.URL_FONTEND;
 }
 
