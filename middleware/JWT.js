@@ -25,8 +25,8 @@ const verify_token = (token) => {
 
 const check_user_login = (req, res, next) => {
   // let cookies = req.cookies;
-  let cookies = req.headers.cookie;
-  // console.log("check cookies: ", cookies.jwt_token);
+  // let cookies = req.headers.cookie;
+  console.log("check cookies: ", cookies.jwt_token);
   if (cookies && cookies.jwt_token) {
     let decoded = verify_token(cookies.jwt_token);
     if (decoded) {
