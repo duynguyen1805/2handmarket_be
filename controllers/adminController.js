@@ -83,7 +83,9 @@ class AdminController {
           });
 
           // res.cookie("jwt_token", `${token_1}`, { httpOnly: true });
-          res.cookie("jwt_token", `${token_1}`);
+          res.cookie("jwt_token", `${token_1}`, {
+            domain: `2handmarket.vercel.app`,
+          });
 
           return res.status(200).json({
             errCode: 0,
