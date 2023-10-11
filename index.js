@@ -26,7 +26,16 @@ const { Server } = require("socket.io");
 db.connect();
 const app = express();
 
-const allowedOrigins = process.env.URL_FONTEND.split(",");
+// const allowedOrigins = process.env.URL_FONTEND.split(",");
+let allowedOrigins;
+if (process.env.NODE_ENV === "development") {
+  // Lấy biến môi trường từ .env.local trong môi trường development
+  require("dotenv").config({ path: ".env" });
+  allowedOrigins = process.env.URL_FONTEND;
+} else {
+  // Lấy biến môi trường từ .env trong môi trường khác
+  allowedOrigins = process.env.URL_FONTEND;
+}
 
 app.use(
   cors({
