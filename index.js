@@ -26,8 +26,7 @@ const { Server } = require("socket.io");
 db.connect();
 const app = express();
 
-// const allowedOrigins = process.env.URL_FONTEND.split(",");
-const allowedOrigins = "https://2handmarket.vercel.app";
+const allowedOrigins = process.env.URL_FONTEND.split(",");
 
 app.use(
   cors({
