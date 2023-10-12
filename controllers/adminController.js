@@ -88,7 +88,7 @@ class AdminController {
           res.cookie("jwt_token", `${token_1}`, {
             // domain: allowedOrigins,
             sameSite: "None",
-            // secure: true,
+            secure: true,
           });
 
           return res.status(200).json({
