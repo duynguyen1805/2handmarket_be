@@ -51,7 +51,6 @@ const check_user_login = (req, res, next) => {
     let token = authorizationHeader.split(" ")[1];
     // Loại bỏ dấu ngoặc kép từ token
     token = token.replace(/"/g, "");
-    console.log("check: ", token);
     const decoded = verify_token(token);
     if (decoded) {
       req.user = decoded;
