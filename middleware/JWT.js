@@ -23,25 +23,46 @@ const verify_token = (token) => {
   return decoded;
 };
 
+// const check_user_login = (req, res, next) => {
+//   let cookies = req.cookies;
+//   // let cookies = req.headers.cookie;
+//   console.log("check cookies: ", cookies.jwt_token);
+//   if (cookies && cookies.jwt_token) {
+//     let decoded = verify_token(cookies.jwt_token);
+//     if (decoded) {
+//       req.user = decoded;
+//       next();
+//     } else {
+//       return res.status(401).json({
+//         errorCode: 401,
+//         message: "Cần đăng nhập trên truy cập",
+//       });
+//     }
+//   } else {
+//     return res.status(401).json({
+//       errorCode: 401,
+//       message: "Cần đăng nhập trên truy cập",
+//     });
+//   }
+// };
 const check_user_login = (req, res, next) => {
-  let cookies = req.cookies;
-  // let cookies = req.headers.cookie;
-  console.log("check cookies: ", cookies.jwt_token);
-  if (cookies && cookies.jwt_token) {
-    let decoded = verify_token(cookies.jwt_token);
+  const authorizationHeader = req.headers["authorization"];
+  if (authorizationHeader && authorizationHeader.startsWith("Bearer ")) {
+    const token = authorizationHeader.split(" ")[1];
+    const decoded = verify_token(token);
     if (decoded) {
       req.user = decoded;
       next();
     } else {
       return res.status(401).json({
         errorCode: 401,
-        message: "Cần đăng nhập trên truy cập",
+        message: "Cần đăng nhập trước khi truy cập",
       });
     }
   } else {
     return res.status(401).json({
       errorCode: 401,
-      message: "Cần đăng nhập trên truy cập",
+      message: "Cần đăng nhập trước khi truy cập",
     });
   }
 };
