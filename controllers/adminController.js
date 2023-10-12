@@ -86,7 +86,8 @@ class AdminController {
 
           // res.cookie("jwt_token", `${token_1}`, { httpOnly: true });
           res.cookie("jwt_token", `${token_1}`, {
-            // domain: allowedOrigins,
+            domain: allowedOrigins,
+            path: "/",
             sameSite: "None",
             secure: true,
           });
