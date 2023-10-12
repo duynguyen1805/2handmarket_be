@@ -48,7 +48,10 @@ const verify_token = (token) => {
 const check_user_login = (req, res, next) => {
   const authorizationHeader = req.headers["authorization"];
   if (authorizationHeader && authorizationHeader.startsWith("Bearer ")) {
-    const token = authorizationHeader.split(" ")[1];
+    let token = authorizationHeader.split(" ")[1];
+    // Loại bỏ dấu ngoặc kép từ token
+    token = token.replace(/"/g, "");
+    console.log("check: ", token);
     const decoded = verify_token(token);
     if (decoded) {
       req.user = decoded;
@@ -57,6 +60,7 @@ const check_user_login = (req, res, next) => {
       return res.status(401).json({
         errorCode: 401,
         message: "Cần đăng nhập trước khi truy cập",
+        token: token,
       });
     }
   } else {
