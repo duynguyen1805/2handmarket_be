@@ -75,7 +75,7 @@ const io = new Server(server, {
   //   methods: ["GET", "POST"],
   // },
   cors: {
-    origin: allowedOrigins,
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });
