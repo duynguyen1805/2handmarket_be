@@ -82,21 +82,21 @@ class AdminController {
             role: user.role,
           });
 
-          let allowedOrigins = "twohandmarket-be.onrender.com";
-
           // res.cookie("jwt_token", `${token_1}`, { httpOnly: true });
-          res.cookie("jwt_token", `${token_1}`, {
-            domain: allowedOrigins,
-            path: "/",
-            sameSite: "Lax",
-            secure: true,
-          });
+          // let allowedOrigins = "twohandmarket-be.onrender.com";
+          // res.cookie("jwt_token", `${token_1}`, {
+          //   domain: allowedOrigins,
+          //   path: "/",
+          //   sameSite: "None",
+          //   secure: true,
+          // });
 
           return res.status(200).json({
             errCode: 0,
             message: "Đăng nhập thành công",
             user: user,
             access_token: token,
+            token_req: token_1,
           });
         } else {
           return res.status(200).json({
