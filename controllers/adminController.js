@@ -90,7 +90,6 @@ class AdminController {
             path: "/",
             sameSite: "None",
             secure: true,
-            Partitioned,
           });
 
           return res.status(200).json({
