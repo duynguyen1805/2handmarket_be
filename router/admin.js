@@ -64,7 +64,7 @@ router.put("/update-user", check_user_login, adminController.updateUser);
 
 // CẦN THÊM ROLE ADMIN ------------------------------------------------
 // Lấy tất cả người dùng
-router.post(
+router.get(
   "/admin/get-user",
   check_user_login,
   check_user_permission,
