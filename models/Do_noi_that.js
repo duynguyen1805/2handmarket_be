@@ -20,6 +20,10 @@ const Do_noi_that = new Schema(
       type: String,
       require: true,
     },
+    new_pur_price: {
+      type: Number,
+      require: false,
+    },
     price: {
       type: Number,
       require: true,

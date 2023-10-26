@@ -20,6 +20,10 @@ const Thu_cung = new Schema(
       type: String,
       require: true,
     },
+    new_pur_price: {
+      type: Number,
+      require: false,
+    },
     price: {
       type: Number,
       require: true,

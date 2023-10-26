@@ -20,6 +20,10 @@ const Do_dien_tu = new Schema(
       type: String,
       require: true,
     },
+    new_pur_price: {
+      type: Number,
+      require: false,
+    },
     price: {
       type: Number,
       require: true,
