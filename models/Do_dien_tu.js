@@ -142,6 +142,10 @@ const Do_dien_tu = new Schema(
       type: Date,
       require: false,
     },
+    thoiGianKetThucQuangCao: {
+      type: Date,
+      require: false,
+    },
   },
   {
     timestamps: true,

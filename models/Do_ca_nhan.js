@@ -70,6 +70,10 @@ const Do_ca_nhan = new Schema(
       type: Date,
       require: false,
     },
+    thoiGianKetThucQuangCao: {
+      type: Date,
+      require: false,
+    },
   },
   {
     timestamps: true,

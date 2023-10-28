@@ -349,48 +349,130 @@ class AdminController {
     }
   }
 
+  getALL_collection_quangcao = async (req, res, next) => {
+    try {
+      const items_per_page = 12;
+      const currentPage = req.body.pagehientai
+        ? parseInt(req.body.pagehientai)
+        : 1;
+      const skip = (currentPage - 1) * items_per_page;
+
+      //moi collection lay tin moi nhat
+      const all_collection = await Promise.all([
+        Hoc_tap.find({ trangthai: 2, trangthaithanhtoan: 1 })
+          .sort({ thoiGianKetThucQuangCao: -1 })
+          .limit(items_per_page)
+          .exec(),
+        Phuong_tien.find({ trangthai: 2, trangthaithanhtoan: 1 })
+          .sort({ thoiGianKetThucQuangCao: -1 })
+          .limit(items_per_page)
+          .exec(),
+        Do_dien_tu.find({ trangthai: 2, trangthaithanhtoan: 1 })
+          .sort({ thoiGianKetThucQuangCao: -1 })
+          .limit(items_per_page)
+          .exec(),
+        Do_noi_that.find({ trangthai: 2, trangthaithanhtoan: 1 })
+          .sort({ thoiGianKetThucQuangCao: -1 })
+          .limit(items_per_page)
+          .exec(),
+        Dien_lanh.find({ trangthai: 2, trangthaithanhtoan: 1 })
+          .sort({ thoiGianKetThucQuangCao: -1 })
+          .limit(items_per_page)
+          .exec(),
+        Do_ca_nhan.find({ trangthai: 2, trangthaithanhtoan: 1 })
+          .sort({ thoiGianKetThucQuangCao: -1 })
+          .limit(items_per_page)
+          .exec(),
+        Do_giai_tri.find({ trangthai: 2, trangthaithanhtoan: 1 })
+          .sort({ thoiGianKetThucQuangCao: -1 })
+          .limit(items_per_page)
+          .exec(),
+        Thu_cung.find({ trangthai: 2, trangthaithanhtoan: 1 })
+          .sort({ thoiGianKetThucQuangCao: -1 })
+          .limit(items_per_page)
+          .exec(),
+      ]);
+      // merge chung 1 []
+      const merged_Allcollection = [].concat(...all_collection);
+      // sort lai theo thoiGianKetThucQuangCao
+      merged_Allcollection.sort(
+        (a, b) => b.thoiGianKetThucQuangCao - a.thoiGianKetThucQuangCao
+      );
+      // lay 36 item cho moi page
+      const itemstoreturn = merged_Allcollection.slice(
+        skip,
+        skip + items_per_page
+      );
+
+      res.status(200).json({
+        errCode: 0,
+        all_collection: mutiMongooseObject(itemstoreturn),
+      });
+    } catch (error) {
+      res.status(200).json({
+        error: 1,
+        message: "Lấy getALL bị lỗi",
+      });
+    }
+  };
+
   getALL_collection = async (req, res, next) => {
     try {
-      //moi collection lay 3 tin moi nhat
+      const items_per_page = 36;
+      const currentPage = req.body.pagehientai
+        ? parseInt(req.body.pagehientai)
+        : 1;
+      const skip = (currentPage - 1) * items_per_page;
+
+      //moi collection lay tin moi nhat
       const all_collection = await Promise.all([
         Hoc_tap.find({ trangthai: 2 })
           .sort({ ngayduyettin: -1 })
-          .limit(4)
+          .limit(items_per_page)
           .exec(),
         Phuong_tien.find({ trangthai: 2 })
           .sort({ ngayduyettin: -1 })
-          .limit(4)
+          .limit(items_per_page)
           .exec(),
         Do_dien_tu.find({ trangthai: 2 })
           .sort({ ngayduyettin: -1 })
-          .limit(4)
+          .limit(items_per_page)
           .exec(),
         Do_noi_that.find({ trangthai: 2 })
           .sort({ ngayduyettin: -1 })
-          .limit(4)
+          .limit(items_per_page)
           .exec(),
         Dien_lanh.find({ trangthai: 2 })
           .sort({ ngayduyettin: -1 })
-          .limit(4)
+          .limit(items_per_page)
           .exec(),
         Do_ca_nhan.find({ trangthai: 2 })
           .sort({ ngayduyettin: -1 })
-          .limit(4)
+          .limit(items_per_page)
           .exec(),
         Do_giai_tri.find({ trangthai: 2 })
           .sort({ ngayduyettin: -1 })
-          .limit(4)
+          .limit(items_per_page)
           .exec(),
         Thu_cung.find({ trangthai: 2 })
           .sort({ ngayduyettin: -1 })
-          .limit(4)
+          .limit(items_per_page)
           .exec(),
       ]);
-      // merge chung 1 [] sort bên FE
+      // merge chung 1 []
       const merged_Allcollection = [].concat(...all_collection);
-      res
-        .status(200)
-        .json({ all_collection: mutiMongooseObject(merged_Allcollection) });
+      // sort lai theo ngayduyettin
+      merged_Allcollection.sort((a, b) => b.ngayduyettin - a.ngayduyettin);
+      // lay 36 item cho moi page
+      const itemstoreturn = merged_Allcollection.slice(
+        skip,
+        skip + items_per_page
+      );
+
+      res.status(200).json({
+        errCode: 0,
+        all_collection: mutiMongooseObject(itemstoreturn),
+      });
     } catch (error) {
       res.status(200).json({
         error: 1,
@@ -703,39 +785,75 @@ class AdminController {
     const soluong_int = parseInt(soluong, 10); // ép kiểu xài postman
     if (req.body) {
       if (type == "ALL" && role !== "Admin") {
-        const typesArray = [
-          "dienthoai",
-          "maytinhbang",
-          "laptop",
-          "desktop",
-          "thietbideothongminh",
-          "mayanh",
-          "phukien",
-          "linhkien",
-        ];
         const options = {
           sort: { ngayduyettin: -1 },
           limit: soluong_int,
           skip: (pagehientai - 1) * soluong_int, // Tính vị trí bắt đầu lấy dữ liệu
         };
         const filter = {
-          type: type,
+          // type: type,
           trangthai: 2,
         };
         if (trangthai) {
           filter.trangthai = trangthai;
         }
-        // map lấy soluong_int của mỗi loại typesArray
-        var promises = typesArray.map((type) => {
-          filter.type = type;
-          return Do_dien_tu.find(filter, null, options).exec(); // Lấy soluong tin đăng đầu tiên của mỗi loại
-        });
+        // const typesArray = [
+        //   "dienthoai",
+        //   "maytinhbang",
+        //   "laptop",
+        //   "desktop",
+        //   "thietbideothongminh",
+        //   "mayanh",
+        //   "phukien",
+        //   "linhkien",
+        // ];
+        // // map lấy soluong_int của mỗi loại typesArray
+        // var promises = typesArray.map((type) => {
+        //   filter.type = type;
+        //   return Do_dien_tu.find(filter, null, options).exec(); // Lấy soluong tin đăng đầu tiên của mỗi loại
+        // });
         // theo thứ tự typesArray
-        Promise.all(promises)
-          .then((results) => {
+
+        const pipeline = [
+          {
+            $match: filter,
+          },
+          {
+            $addFields: {
+              tralendauList: {
+                $cond: {
+                  if: { $eq: ["$trangthaithanhtoan", 1] },
+                  then: 1,
+                  else: 0,
+                },
+              },
+            },
+          },
+          {
+            $sort: {
+              tralendauList: -1,
+              ngayduyettin: -1,
+            },
+          },
+          {
+            $skip: (pagehientai - 1) * soluong_int,
+          },
+          {
+            $limit: soluong_int,
+          },
+        ];
+
+        var promises = new Promise((resolve, reject) => {
+          Do_dien_tu.aggregate(pipeline)
+            .then((results) => resolve(results))
+            .catch((error) => reject(error));
+        });
+
+        Promise.all([promises])
+          .then(([results]) => {
             let all_dodientu = [];
             results.forEach((products) => {
-              all_dodientu = all_dodientu.concat(mutiMongooseObject(products));
+              all_dodientu = all_dodientu.concat(products);
             });
             res.status(200).json({
               errCode: 0,
@@ -1497,38 +1615,60 @@ class AdminController {
     const soluong_int = parseInt(soluong, 10); // ép kiểu xài postman
     if (req.body) {
       if (type === "ALL" && role !== "Admin") {
-        const typesArray = [
-          "oto",
-          "xemay",
-          "xetai",
-          "xedien",
-          "xedap",
-          "phutung",
-        ];
         const options = {
           sort: { ngayduyettin: -1 },
           limit: soluong_int,
           skip: (pagehientai - 1) * soluong_int, // Tính vị trí bắt đầu lấy dữ liệu
         };
         const filter = {
-          type: type,
           trangthai: 2,
         };
         if (trangthai) {
           filter.trangthai = trangthai;
         }
-        var promises = typesArray.map((type) => {
-          filter.type = type;
-          return Phuong_tien.find(filter, null, options).exec();
+        const pipeline = [
+          {
+            $match: filter,
+          },
+          {
+            $addFields: {
+              tralendauList: {
+                $cond: {
+                  if: { $eq: ["$trangthaithanhtoan", 1] },
+                  then: 1,
+                  else: 0,
+                },
+              },
+            },
+          },
+          {
+            $sort: {
+              tralendauList: -1,
+              ngayduyettin: -1,
+            },
+          },
+          {
+            $skip: (pagehientai - 1) * soluong_int,
+          },
+          {
+            $limit: soluong_int,
+          },
+        ];
+
+        // lấy item trong Phuong_tien theo giá trị soluong, sort trangthaithanhtoan
+        var promises = new Promise((resolve, reject) => {
+          Phuong_tien.aggregate(pipeline)
+            .then((results) => resolve(results))
+            .catch((error) => reject(error));
         });
+
         // theo thứ tự typesArray
-        Promise.all(promises)
-          .then((results) => {
+        Promise.all([promises])
+          .then(([results]) => {
             let all_phuongtien = [];
             results.forEach((products) => {
-              all_phuongtien = all_phuongtien.concat(
-                mutiMongooseObject(products)
-              );
+              // all_phuongtien = all_phuongtien.concat(mutiMongooseObject(products));
+              all_phuongtien = all_phuongtien.concat(products);
             });
             res.status(200).json({
               errCode: 0,
@@ -2263,28 +2403,57 @@ class AdminController {
     const soluong_int = parseInt(soluong, 10); // ép kiểu xài postman
     if (req.body) {
       if (type === "ALL" && role !== "Admin") {
-        const typesArray = ["tulanh", "maylanh", "maygiat"];
         const options = {
           sort: { ngayduyettin: -1 },
           limit: soluong_int,
           skip: (pagehientai - 1) * soluong_int, // Tính vị trí bắt đầu lấy dữ liệu
         };
         const filter = {
-          type: type,
           trangthai: 2,
         };
         if (trangthai) {
           filter.trangthai = trangthai;
         }
-        var promises = typesArray.map((type) => {
-          filter.type = type;
-          return Dien_lanh.find(filter, null, options).exec();
+        const pipeline = [
+          {
+            $match: filter,
+          },
+          {
+            $addFields: {
+              tralendauList: {
+                $cond: {
+                  if: { $eq: ["$trangthaithanhtoan", 1] },
+                  then: 1,
+                  else: 0,
+                },
+              },
+            },
+          },
+          {
+            $sort: {
+              tralendauList: -1,
+              ngayduyettin: -1,
+            },
+          },
+          {
+            $skip: (pagehientai - 1) * soluong_int,
+          },
+          {
+            $limit: soluong_int,
+          },
+        ];
+
+        var promises = new Promise((resolve, reject) => {
+          Dien_lanh.aggregate(pipeline)
+            .then((results) => resolve(results))
+            .catch((error) => reject(error));
         });
-        Promise.all(promises)
-          .then((results) => {
+
+        Promise.all([promises])
+          .then(([results]) => {
             let all_dienlanh = [];
             results.forEach((products) => {
-              all_dienlanh = all_dienlanh.concat(mutiMongooseObject(products));
+              all_dienlanh = all_dienlanh.concat(products);
             });
 
             res.status(200).json({

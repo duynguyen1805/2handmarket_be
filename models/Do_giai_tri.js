@@ -69,6 +69,10 @@ const Do_giai_tri = new Schema(
       type: Date,
       require: false,
     },
+    thoiGianKetThucQuangCao: {
+      type: Date,
+      require: false,
+    },
   },
   {
     timestamps: true,

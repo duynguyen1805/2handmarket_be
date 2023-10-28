@@ -72,6 +72,10 @@ const Do_noi_that = new Schema(
       type: Date,
       require: false,
     },
+    thoiGianKetThucQuangCao: {
+      type: Date,
+      require: false,
+    },
   },
   {
     timestamps: true,

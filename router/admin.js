@@ -10,8 +10,13 @@ const {
 router.post("/login", adminController.login);
 // Register
 router.post("/register-user", adminController.registerUser);
-// // Lấy tin đăng cho homepage
-router.get("/get-all-collection", adminController.getALL_collection);
+// Lấy tin đăng cho homepage
+router.post("/get-all-collection", adminController.getALL_collection);
+// Lấy tin đăng quảng cáo cho homepage
+router.post(
+  "/get-all-collection-quang-cao",
+  adminController.getALL_collection_quangcao
+);
 // Lấy số lượng tin mỗi collection
 router.get("/get-all-soluongtin", adminController.get_soluongtin_moidanhmuc);
 // Lấy tất cả sản phẩm trong collection

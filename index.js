@@ -106,6 +106,7 @@ cron.schedule("0 0 * * *", async () => {
       await Promise.all(
         tinDangCanCapNhat.map(async (tinDang) => {
           tinDang.trangthaithanhtoan = 0;
+          tinDang.thoiGianKetThucQuangCao = new Date();
           await tinDang.save();
         })
       );

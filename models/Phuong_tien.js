@@ -140,6 +140,10 @@ const Phuong_tien = new Schema(
       type: Date,
       require: false,
     },
+    thoiGianKetThucQuangCao: {
+      type: Date,
+      require: false,
+    },
   },
   {
     timestamps: true,
