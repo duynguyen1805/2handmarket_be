@@ -14,6 +14,7 @@ const Dien_lanh = require("../models/Dien_lanh");
 const Do_ca_nhan = require("../models/Do_ca_nhan");
 const Do_giai_tri = require("../models/Do_giai_tri");
 const Thu_cung = require("../models/Thu_cung");
+const Quang_cao = require("../models/Quangcao");
 const phoneUtil = PhoneNumberUtil.getInstance();
 var salt = bcrypt.genSaltSync(10);
 const crypto = require("crypto");
@@ -3369,9 +3370,9 @@ class AdminController {
       if (validTypes_dohoctap.includes(type)) {
         return Promise.all([Hoc_tap.find({ _id: id })])
           .then(([Hoc_tap]) => {
-            if (!Hoc_tap) {
+            if (!Hoc_tap || Hoc_tap.length === 0) {
               return res
-                .status(404)
+                .status(200)
                 .json({ errCode: 1, message: "Tin đăng không tồn tại." });
             }
             const id_nguoidung = Hoc_tap[0].id_user;
@@ -3380,10 +3381,11 @@ class AdminController {
               .then((User) => {
                 if (!User) {
                   return res
-                    .status(404)
+                    .status(200)
                     .json({ error: "Không tìm thấy thông tin người dùng." });
                 }
-                res.json({
+                res.status(200).json({
+                  errCode: 0,
                   dataItem: mutiMongooseObject(Hoc_tap),
                   userInfo: mutiMongooseObject(User),
                 });
@@ -3395,9 +3397,9 @@ class AdminController {
       if (validTypes_dodientu.includes(type)) {
         return Promise.all([Do_dien_tu.find({ _id: id })])
           .then(([Do_dien_tu]) => {
-            if (!Do_dien_tu) {
+            if (!Do_dien_tu || Do_dien_tu.length === 0) {
               return res
-                .status(404)
+                .status(200)
                 .json({ errCode: 1, message: "Tin đăng không tồn tại." });
             }
             const id_nguoidung = Do_dien_tu[0].id_user;
@@ -3406,10 +3408,11 @@ class AdminController {
               .then((User) => {
                 if (!User) {
                   return res
-                    .status(404)
+                    .status(200)
                     .json({ error: "Không tìm thấy thông tin người dùng." });
                 }
-                res.json({
+                res.status(200).json({
+                  errCode: 0,
                   dataItem: mutiMongooseObject(Do_dien_tu),
                   userInfo: mutiMongooseObject(User),
                 });
@@ -3421,9 +3424,9 @@ class AdminController {
       if (validTypes_phuongtien.includes(type)) {
         return Promise.all([Phuong_tien.find({ _id: id })])
           .then(([Phuong_tien]) => {
-            if (!Phuong_tien) {
+            if (!Phuong_tien || Phuong_tien.length === 0) {
               return res
-                .status(404)
+                .status(200)
                 .json({ errCode: 1, message: "Tin đăng không tồn tại." });
             }
             const id_nguoidung = Phuong_tien[0].id_user;
@@ -3432,10 +3435,11 @@ class AdminController {
               .then((User) => {
                 if (!User) {
                   return res
-                    .status(404)
+                    .status(200)
                     .json({ error: "Không tìm thấy thông tin người dùng." });
                 }
-                res.json({
+                res.status(200).json({
+                  errCode: 0,
                   dataItem: mutiMongooseObject(Phuong_tien),
                   userInfo: mutiMongooseObject(User),
                 });
@@ -3447,9 +3451,9 @@ class AdminController {
       if (validTypes_donoithat.includes(type)) {
         return Promise.all([Do_noi_that.find({ _id: id })])
           .then(([Do_noi_that]) => {
-            if (!Do_noi_that) {
+            if (!Do_noi_that || Do_noi_that.length === 0) {
               return res
-                .status(404)
+                .status(200)
                 .json({ errCode: 1, message: "Tin đăng không tồn tại." });
             }
             const id_nguoidung = Do_noi_that[0].id_user;
@@ -3458,10 +3462,11 @@ class AdminController {
               .then((User) => {
                 if (!User) {
                   return res
-                    .status(404)
+                    .status(200)
                     .json({ error: "Không tìm thấy thông tin người dùng." });
                 }
-                res.json({
+                res.status(200).json({
+                  errCode: 0,
                   dataItem: mutiMongooseObject(Do_noi_that),
                   userInfo: mutiMongooseObject(User),
                 });
@@ -3473,9 +3478,9 @@ class AdminController {
       if (validTypes_dienlanh.includes(type)) {
         return Promise.all([Dien_lanh.find({ _id: id })])
           .then(([Dien_lanh]) => {
-            if (!Dien_lanh) {
+            if (!Dien_lanh || Dien_lanh.length === 0) {
               return res
-                .status(404)
+                .status(200)
                 .json({ errCode: 1, message: "Tin đăng không tồn tại." });
             }
             const id_nguoidung = Dien_lanh[0].id_user;
@@ -3484,10 +3489,11 @@ class AdminController {
               .then((User) => {
                 if (!User) {
                   return res
-                    .status(404)
+                    .status(200)
                     .json({ error: "Không tìm thấy thông tin người dùng." });
                 }
-                res.json({
+                res.status(200).json({
+                  errCode: 0,
                   dataItem: mutiMongooseObject(Dien_lanh),
                   userInfo: mutiMongooseObject(User),
                 });
@@ -3499,9 +3505,9 @@ class AdminController {
       if (validTypes_docanhan.includes(type)) {
         return Promise.all([Do_ca_nhan.find({ _id: id })])
           .then(([Do_ca_nhan]) => {
-            if (!Do_ca_nhan) {
+            if (!Do_ca_nhan || Do_ca_nhan.length === 0) {
               return res
-                .status(404)
+                .status(200)
                 .json({ errCode: 1, message: "Tin đăng không tồn tại." });
             }
             const id_nguoidung = Do_ca_nhan[0].id_user;
@@ -3510,10 +3516,11 @@ class AdminController {
               .then((User) => {
                 if (!User) {
                   return res
-                    .status(404)
+                    .status(200)
                     .json({ error: "Không tìm thấy thông tin người dùng." });
                 }
-                res.json({
+                res.status(200).json({
+                  errCode: 0,
                   dataItem: mutiMongooseObject(Do_ca_nhan),
                   userInfo: mutiMongooseObject(User),
                 });
@@ -3525,9 +3532,9 @@ class AdminController {
       if (validTypes_dogiaitri.includes(type)) {
         return Promise.all([Do_giai_tri.find({ _id: id })])
           .then(([Do_giai_tri]) => {
-            if (!Do_giai_tri) {
+            if (!Do_giai_tri || Do_giai_tri.length === 0) {
               return res
-                .status(404)
+                .status(200)
                 .json({ errCode: 1, message: "Tin đăng không tồn tại." });
             }
             const id_nguoidung = Do_giai_tri[0].id_user;
@@ -3536,10 +3543,11 @@ class AdminController {
               .then((User) => {
                 if (!User) {
                   return res
-                    .status(404)
+                    .status(200)
                     .json({ error: "Không tìm thấy thông tin người dùng." });
                 }
-                res.json({
+                res.status(200).json({
+                  errCode: 0,
                   dataItem: mutiMongooseObject(Do_giai_tri),
                   userInfo: mutiMongooseObject(User),
                 });
@@ -3551,9 +3559,9 @@ class AdminController {
       if (validTypes_thucung.includes(type)) {
         return Promise.all([Thu_cung.find({ _id: id })])
           .then(([Thu_cung]) => {
-            if (!Thu_cung) {
+            if (!Thu_cung || Thu_cung.length === 0) {
               return res
-                .status(404)
+                .status(200)
                 .json({ errCode: 1, message: "Tin đăng không tồn tại." });
             }
             const id_nguoidung = Thu_cung[0].id_user;
@@ -3562,10 +3570,11 @@ class AdminController {
               .then((User) => {
                 if (!User) {
                   return res
-                    .status(404)
+                    .status(200)
                     .json({ error: "Không tìm thấy thông tin người dùng." });
                 }
-                res.json({
+                res.status(200).json({
+                  errCode: 0,
                   dataItem: mutiMongooseObject(Thu_cung),
                   userInfo: mutiMongooseObject(User),
                 });
@@ -4294,6 +4303,13 @@ class AdminController {
     }
   };
   updateTrangthai_thanhtoan = async (req, res, next) => {
+    function formatDateToDDMMYYYY(date) {
+      const day = date.getDate().toString().padStart(2, "0");
+      const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Lưu ý rằng tháng trong JavaScript bắt đầu từ 0
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    }
+
     const { id, typeTindang } = req.body;
     const validTypes_dohoctap = ["giaotrinh", "sachthamkhao", "other_hoctap"];
     const validTypes_dodientu = [
@@ -4349,15 +4365,36 @@ class AdminController {
           Date.now() + 1000 * 60 * 60 * 24 * 7
         ); //7d
         if (tindang) {
-          Hoc_tap.updateOne({ _id: id }, tindang)
-            .then(() => {
-              return res.json({
-                errCode: 0,
-                message: "Cập nhật trangthaithanhtoan thành công",
-                trangthaithanhtoan: tindang.trangthaithanhtoan,
-              });
-            })
-            .catch(next);
+          const user = await User.findOne({ _id: tindang.id_user });
+          if (user) {
+            let tindang_quangcao = new Quang_cao({
+              id_tindang: tindang._id,
+              tieude: tindang.tieude,
+              type: tindang.type,
+              price: tindang.price,
+              id_user: tindang.id_user,
+              name_user: user.name,
+              thoigian: [
+                {
+                  ngaybatdau: formatDateToDDMMYYYY(new Date()),
+                  ngayketthuc: formatDateToDDMMYYYY(
+                    new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+                  ),
+                },
+              ],
+            });
+            await tindang_quangcao.save();
+
+            await Hoc_tap.updateOne({ _id: id }, tindang)
+              .then(() => {
+                return res.json({
+                  errCode: 0,
+                  message: "Cập nhật trangthaithanhtoan thành công",
+                  trangthaithanhtoan: tindang.trangthaithanhtoan,
+                });
+              })
+              .catch(next);
+          }
         }
       }
       if (validTypes_dodientu.includes(typeTindang)) {
@@ -4840,6 +4877,67 @@ class AdminController {
       res.status(200).json({
         errCode: 1,
         message: "Không có keyword",
+      });
+    }
+  };
+
+  searchLichsu_Quangcao = async (req, res, next) => {
+    const value = req.body.value;
+    try {
+      Quang_cao.find({
+        $or: [
+          { tieude: { $regex: value, $options: "i" } },
+          { name_user: { $regex: value, $options: "i" } },
+        ],
+      }).then((resultSearch) => {
+        res.json({
+          resultSearch: mutiMongooseObject(resultSearch),
+        });
+      });
+    } catch (error) {
+      res.status(200).json({
+        error: 1,
+        message: "Lấy getALL bị lỗi",
+      });
+    }
+  };
+
+  //lọc lịch sử tin đăng quảng cáo theo Tháng
+  getLichsu_qc_byMonth = async (req, res, next) => {
+    if (req.body) {
+      const queryDate = req.body.thoigian;
+      try {
+        // const history = await Quang_cao.find({
+        //   "thoigian.ngaybatdau": {
+        //     $regex: queryDate,
+        //   },
+        // });
+        const history = await Quang_cao.aggregate([
+          {
+            $match: {
+              "thoigian.ngaybatdau": {
+                $regex: queryDate,
+              },
+            },
+          },
+          {
+            $sort: {
+              "thoigian.ngaybatdau": 1,
+            },
+          },
+        ]);
+        res.status(200).json({
+          errCode: 0,
+          message: "Lấy lịch sử tin đăng quảng cáo theo THÁNG thành công",
+          History: history,
+        });
+      } catch (error) {
+        next(error);
+      }
+    } else {
+      return res.status(500).json({
+        errCode: 1,
+        message: "Lọc lịch sử tin đăng bị lỗi.",
       });
     }
   };

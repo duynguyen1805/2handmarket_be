@@ -89,5 +89,19 @@ router.delete(
   check_user_permission,
   adminController.deleteUser
 );
+// lấy danh sách tin đăng ĐÃ sử dụng quảng cáo
+router.post(
+  "/admin/search-lich-su-quang-cao",
+  check_user_login,
+  check_user_permission,
+  adminController.searchLichsu_Quangcao
+);
+// lấy danh sách tin đăng ĐÃ sử dụng quảng cáo theo tháng
+router.post(
+  "/admin/get-lich-su-qc-by-month",
+  check_user_login,
+  check_user_permission,
+  adminController.getLichsu_qc_byMonth
+);
 
 module.exports = router;
