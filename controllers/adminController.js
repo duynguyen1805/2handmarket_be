@@ -4404,15 +4404,36 @@ class AdminController {
           Date.now() + 1000 * 60 * 60 * 24 * 7
         ); //7d
         if (tindang) {
-          Do_dien_tu.updateOne({ _id: id }, tindang)
-            .then(() => {
-              return res.json({
-                errCode: 0,
-                message: "Đã cập nhật trangthaithanhtoan thành công",
-                trangthaithanhtoan: tindang.trangthaithanhtoan,
-              });
-            })
-            .catch(next);
+          const user = await User.findOne({ _id: tindang.id_user });
+          if (user) {
+            let tindang_quangcao = new Quang_cao({
+              id_tindang: tindang._id,
+              tieude: tindang.tieude,
+              type: tindang.type,
+              price: tindang.price,
+              id_user: tindang.id_user,
+              name_user: user.name,
+              thoigian: [
+                {
+                  ngaybatdau: formatDateToDDMMYYYY(new Date()),
+                  ngayketthuc: formatDateToDDMMYYYY(
+                    new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+                  ),
+                },
+              ],
+            });
+            await tindang_quangcao.save();
+
+            await Do_dien_tu.updateOne({ _id: id }, tindang)
+              .then(() => {
+                return res.json({
+                  errCode: 0,
+                  message: "Đã cập nhật trangthaithanhtoan thành công",
+                  trangthaithanhtoan: tindang.trangthaithanhtoan,
+                });
+              })
+              .catch(next);
+          }
         }
       }
       if (validTypes_phuongtien.includes(typeTindang)) {
@@ -4422,15 +4443,36 @@ class AdminController {
           Date.now() + 1000 * 60 * 60 * 24 * 7
         ); //7d
         if (tindang) {
-          Phuong_tien.updateOne({ _id: id }, tindang)
-            .then(() => {
-              return res.json({
-                errCode: 0,
-                message: "Đã cập nhật trangthaithanhtoan thành công",
-                trangthaithanhtoan: tindang.trangthaithanhtoan,
-              });
-            })
-            .catch(next);
+          const user = await User.findOne({ _id: tindang.id_user });
+          if (user) {
+            let tindang_quangcao = new Quang_cao({
+              id_tindang: tindang._id,
+              tieude: tindang.tieude,
+              type: tindang.type,
+              price: tindang.price,
+              id_user: tindang.id_user,
+              name_user: user.name,
+              thoigian: [
+                {
+                  ngaybatdau: formatDateToDDMMYYYY(new Date()),
+                  ngayketthuc: formatDateToDDMMYYYY(
+                    new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+                  ),
+                },
+              ],
+            });
+            await tindang_quangcao.save();
+
+            await Phuong_tien.updateOne({ _id: id }, tindang)
+              .then(() => {
+                return res.json({
+                  errCode: 0,
+                  message: "Đã cập nhật trangthaithanhtoan thành công",
+                  trangthaithanhtoan: tindang.trangthaithanhtoan,
+                });
+              })
+              .catch(next);
+          }
         }
       }
       if (validTypes_donoithat.includes(typeTindang)) {
@@ -4440,15 +4482,36 @@ class AdminController {
           Date.now() + 1000 * 60 * 60 * 24 * 7
         ); //7d
         if (tindang) {
-          Do_noi_that.updateOne({ _id: id }, tindang)
-            .then(() => {
-              return res.json({
-                errCode: 0,
-                message: "Đã cập nhật trangthaithanhtoan thành công",
-                trangthaithanhtoan: tindang.trangthaithanhtoan,
-              });
-            })
-            .catch(next);
+          const user = await User.findOne({ _id: tindang.id_user });
+          if (user) {
+            let tindang_quangcao = new Quang_cao({
+              id_tindang: tindang._id,
+              tieude: tindang.tieude,
+              type: tindang.type,
+              price: tindang.price,
+              id_user: tindang.id_user,
+              name_user: user.name,
+              thoigian: [
+                {
+                  ngaybatdau: formatDateToDDMMYYYY(new Date()),
+                  ngayketthuc: formatDateToDDMMYYYY(
+                    new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+                  ),
+                },
+              ],
+            });
+            await tindang_quangcao.save();
+
+            await Do_noi_that.updateOne({ _id: id }, tindang)
+              .then(() => {
+                return res.json({
+                  errCode: 0,
+                  message: "Cập nhật trangthaithanhtoan thành công",
+                  trangthaithanhtoan: tindang.trangthaithanhtoan,
+                });
+              })
+              .catch(next);
+          }
         }
       }
       if (validTypes_dienlanh.includes(typeTindang)) {
@@ -4458,15 +4521,36 @@ class AdminController {
           Date.now() + 1000 * 60 * 60 * 24 * 7
         ); //7d
         if (tindang) {
-          Dien_lanh.updateOne({ _id: id }, tindang)
-            .then(() => {
-              return res.json({
-                errCode: 0,
-                message: "Đã cập nhật trangthaithanhtoan thành công",
-                trangthaithanhtoan: tindang.trangthaithanhtoan,
-              });
-            })
-            .catch(next);
+          const user = await User.findOne({ _id: tindang.id_user });
+          if (user) {
+            let tindang_quangcao = new Quang_cao({
+              id_tindang: tindang._id,
+              tieude: tindang.tieude,
+              type: tindang.type,
+              price: tindang.price,
+              id_user: tindang.id_user,
+              name_user: user.name,
+              thoigian: [
+                {
+                  ngaybatdau: formatDateToDDMMYYYY(new Date()),
+                  ngayketthuc: formatDateToDDMMYYYY(
+                    new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+                  ),
+                },
+              ],
+            });
+            await tindang_quangcao.save();
+
+            await Dien_lanh.updateOne({ _id: id }, tindang)
+              .then(() => {
+                return res.json({
+                  errCode: 0,
+                  message: "Cập nhật trangthaithanhtoan thành công",
+                  trangthaithanhtoan: tindang.trangthaithanhtoan,
+                });
+              })
+              .catch(next);
+          }
         }
       }
       if (validTypes_docanhan.includes(typeTindang)) {
@@ -4476,15 +4560,36 @@ class AdminController {
           Date.now() + 1000 * 60 * 60 * 24 * 7
         ); //7d
         if (tindang) {
-          Do_ca_nhan.updateOne({ _id: id }, tindang)
-            .then(() => {
-              return res.json({
-                errCode: 0,
-                message: "Đã cập nhật trangthaithanhtoan thành công",
-                trangthaithanhtoan: tindang.trangthaithanhtoan,
-              });
-            })
-            .catch(next);
+          const user = await User.findOne({ _id: tindang.id_user });
+          if (user) {
+            let tindang_quangcao = new Quang_cao({
+              id_tindang: tindang._id,
+              tieude: tindang.tieude,
+              type: tindang.type,
+              price: tindang.price,
+              id_user: tindang.id_user,
+              name_user: user.name,
+              thoigian: [
+                {
+                  ngaybatdau: formatDateToDDMMYYYY(new Date()),
+                  ngayketthuc: formatDateToDDMMYYYY(
+                    new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+                  ),
+                },
+              ],
+            });
+            await tindang_quangcao.save();
+
+            await Do_ca_nhan.updateOne({ _id: id }, tindang)
+              .then(() => {
+                return res.json({
+                  errCode: 0,
+                  message: "Cập nhật trangthaithanhtoan thành công",
+                  trangthaithanhtoan: tindang.trangthaithanhtoan,
+                });
+              })
+              .catch(next);
+          }
         }
       }
       if (validTypes_dogiaitri.includes(typeTindang)) {
@@ -4494,15 +4599,36 @@ class AdminController {
           Date.now() + 1000 * 60 * 60 * 24 * 7
         ); //7d
         if (tindang) {
-          Do_giai_tri.updateOne({ _id: id }, tindang)
-            .then(() => {
-              return res.json({
-                errCode: 0,
-                message: "Đã cập nhật trangthaithanhtoan thành công",
-                trangthaithanhtoan: tindang.trangthaithanhtoan,
-              });
-            })
-            .catch(next);
+          const user = await User.findOne({ _id: tindang.id_user });
+          if (user) {
+            let tindang_quangcao = new Quang_cao({
+              id_tindang: tindang._id,
+              tieude: tindang.tieude,
+              type: tindang.type,
+              price: tindang.price,
+              id_user: tindang.id_user,
+              name_user: user.name,
+              thoigian: [
+                {
+                  ngaybatdau: formatDateToDDMMYYYY(new Date()),
+                  ngayketthuc: formatDateToDDMMYYYY(
+                    new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+                  ),
+                },
+              ],
+            });
+            await tindang_quangcao.save();
+
+            await Do_giai_tri.updateOne({ _id: id }, tindang)
+              .then(() => {
+                return res.json({
+                  errCode: 0,
+                  message: "Cập nhật trangthaithanhtoan thành công",
+                  trangthaithanhtoan: tindang.trangthaithanhtoan,
+                });
+              })
+              .catch(next);
+          }
         }
       }
       if (validTypes_thucung.includes(typeTindang)) {
@@ -4512,15 +4638,36 @@ class AdminController {
           Date.now() + 1000 * 60 * 60 * 24 * 7
         ); //7d
         if (tindang) {
-          Thu_cung.updateOne({ _id: id }, tindang)
-            .then(() => {
-              return res.json({
-                errCode: 0,
-                message: "Đã cập nhật trangthaithanhtoan thành công",
-                trangthaithanhtoan: tindang.trangthaithanhtoan,
-              });
-            })
-            .catch(next);
+          const user = await User.findOne({ _id: tindang.id_user });
+          if (user) {
+            let tindang_quangcao = new Quang_cao({
+              id_tindang: tindang._id,
+              tieude: tindang.tieude,
+              type: tindang.type,
+              price: tindang.price,
+              id_user: tindang.id_user,
+              name_user: user.name,
+              thoigian: [
+                {
+                  ngaybatdau: formatDateToDDMMYYYY(new Date()),
+                  ngayketthuc: formatDateToDDMMYYYY(
+                    new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+                  ),
+                },
+              ],
+            });
+            await tindang_quangcao.save();
+
+            await Thu_cung.updateOne({ _id: id }, tindang)
+              .then(() => {
+                return res.json({
+                  errCode: 0,
+                  message: "Cập nhật trangthaithanhtoan thành công",
+                  trangthaithanhtoan: tindang.trangthaithanhtoan,
+                });
+              })
+              .catch(next);
+          }
         }
       }
     } else {
