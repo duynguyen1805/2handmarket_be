@@ -50,6 +50,11 @@ router.post(
   adminController.create_Dangtin
 );
 router.put(
+  "/update-chi-tiet-tin-dang/:idTindang-:type",
+  check_user_login,
+  adminController.updateChitiet_tindang
+);
+router.put(
   "/update-status-antin-by-user",
   check_user_login,
   adminController.updateTrangthai_Antin_byuser

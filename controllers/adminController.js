@@ -3612,6 +3612,216 @@ class AdminController {
       });
     }
   };
+  // cập nhật tin đăng khi tin đăng chưa được duyệt (trangthai = 1)
+  updateChitiet_tindang = async (req, res, next) => {
+    const { idTindang, type } = req.params;
+    const { img, tieude, mota, giaban_muamoi, giaban } = req.body;
+    const validTypes_dohoctap = ["giaotrinh", "sachthamkhao", "other_hoctap"];
+    const validTypes_dodientu = [
+      "dienthoai",
+      "laptop",
+      "maytinhbang",
+      "desktop",
+      "thietbideothongminh",
+      "mayanh",
+      "phukien",
+      "linhkien",
+    ];
+    const validTypes_phuongtien = [
+      "oto",
+      "xemay",
+      "xetai",
+      "xedien",
+      "xedap",
+      "phutung",
+    ];
+    const validTypes_donoithat = [
+      "banghe",
+      "tuke",
+      "giuong",
+      "bep",
+      "dungcubep",
+      "quat",
+      "den",
+      "other_donoithat",
+    ];
+    const validTypes_docanhan = [
+      "quanao",
+      "dongho",
+      "giaydep",
+      "nuochoa",
+      "balo",
+      "other_docanhan",
+    ];
+    const validTypes_dogiaitri = [
+      "nhaccu",
+      "sach",
+      "dothethao",
+      "thietbichoigame",
+      "other_dogiaitri",
+    ];
+    const validTypes_thucung = ["cho", "meo", "ca", "other_thucung"];
+    const validTypes_dienlanh = ["tulanh", "maylanh", "maygiat"];
+    if (idTindang && type) {
+      if (validTypes_dohoctap.includes(type)) {
+        let tindang = await Hoc_tap.findOne({
+          _id: idTindang,
+          type: type,
+        });
+        tindang.img = img;
+        tindang.tieude = tieude;
+        tindang.mota = mota;
+        tindang.new_pur_price = giaban_muamoi;
+        tindang.price = giaban;
+        if (tindang) {
+          Hoc_tap.updateOne({ _id: idTindang }, tindang).then(() => {
+            return res.json({
+              errCode: 0,
+              message: "Cập nhật tin đăng thành công",
+            });
+          });
+        }
+      }
+      if (validTypes_phuongtien.includes(type)) {
+        let tindang = await Phuong_tien.findOne({
+          _id: idTindang,
+          type: type,
+        });
+        tindang.img = img;
+        tindang.tieude = tieude;
+        tindang.mota = mota;
+        tindang.new_pur_price = giaban_muamoi;
+        tindang.price = giaban;
+        if (tindang) {
+          Phuong_tien.updateOne({ _id: idTindang }, tindang).then(() => {
+            return res.json({
+              errCode: 0,
+              message: "Cập nhật tin đăng thành công",
+            });
+          });
+        }
+      }
+      if (validTypes_dodientu.includes(type)) {
+        let tindang = await Do_dien_tu.findOne({
+          _id: idTindang,
+          type: type,
+        });
+        tindang.img = img;
+        tindang.tieude = tieude;
+        tindang.mota = mota;
+        tindang.new_pur_price = giaban_muamoi;
+        tindang.price = giaban;
+        if (tindang) {
+          Do_dien_tu.updateOne({ _id: idTindang }, tindang).then(() => {
+            return res.json({
+              errCode: 0,
+              message: "Cập nhật tin đăng thành công",
+            });
+          });
+        }
+      }
+      if (validTypes_donoithat.includes(type)) {
+        let tindang = await Do_noi_that.findOne({
+          _id: idTindang,
+          type: type,
+        });
+        tindang.img = img;
+        tindang.tieude = tieude;
+        tindang.mota = mota;
+        tindang.new_pur_price = giaban_muamoi;
+        tindang.price = giaban;
+        if (tindang) {
+          Do_noi_that.updateOne({ _id: idTindang }, tindang).then(() => {
+            return res.json({
+              errCode: 0,
+              message: "Cập nhật tin đăng thành công",
+            });
+          });
+        }
+      }
+      if (validTypes_dienlanh.includes(type)) {
+        let tindang = await Dien_lanh.findOne({
+          _id: idTindang,
+          type: type,
+        });
+        tindang.img = img;
+        tindang.tieude = tieude;
+        tindang.mota = mota;
+        tindang.new_pur_price = giaban_muamoi;
+        tindang.price = giaban;
+        if (tindang) {
+          Dien_lanh.updateOne({ _id: idTindang }, tindang).then(() => {
+            return res.json({
+              errCode: 0,
+              message: "Cập nhật tin đăng thành công",
+            });
+          });
+        }
+      }
+      if (validTypes_docanhan.includes(type)) {
+        let tindang = await Do_ca_nhan.findOne({
+          _id: idTindang,
+          type: type,
+        });
+        tindang.img = img;
+        tindang.tieude = tieude;
+        tindang.mota = mota;
+        tindang.new_pur_price = giaban_muamoi;
+        tindang.price = giaban;
+        if (tindang) {
+          Do_ca_nhan.updateOne({ _id: idTindang }, tindang).then(() => {
+            return res.json({
+              errCode: 0,
+              message: "Cập nhật tin đăng thành công",
+            });
+          });
+        }
+      }
+      if (validTypes_dogiaitri.includes(type)) {
+        let tindang = await Do_giai_tri.findOne({
+          _id: idTindang,
+          type: type,
+        });
+        tindang.img = img;
+        tindang.tieude = tieude;
+        tindang.mota = mota;
+        tindang.new_pur_price = giaban_muamoi;
+        tindang.price = giaban;
+        if (tindang) {
+          Do_giai_tri.updateOne({ _id: idTindang }, tindang).then(() => {
+            return res.json({
+              errCode: 0,
+              message: "Cập nhật tin đăng thành công",
+            });
+          });
+        }
+      }
+      if (validTypes_thucung.includes(type)) {
+        let tindang = await Thu_cung.findOne({
+          _id: idTindang,
+          type: type,
+        });
+        tindang.img = img;
+        tindang.tieude = tieude;
+        tindang.mota = mota;
+        tindang.new_pur_price = giaban_muamoi;
+        tindang.price = giaban;
+        if (tindang) {
+          Thu_cung.updateOne({ _id: idTindang }, tindang).then(() => {
+            return res.json({
+              errCode: 0,
+              message: "Cập nhật tin đăng thành công",
+            });
+          });
+        }
+      }
+    } else {
+      return res.status(200).json({
+        errCode: 1,
+        message: `Thiếu thông tin truyền vào`,
+      });
+    }
+  };
   // Cập nhật trạng thái duyệt tin trangthai:
   // (1: doiduyet, 2: daduyet, 3: admintuchoi(kem lido), 4: antin )
   updateTrangthaiDuyettin = async (req, res, next) => {
