@@ -361,34 +361,138 @@ class AdminController {
       //moi collection lay tin moi nhat
       const all_collection = await Promise.all([
         Hoc_tap.find({ trangthai: 2, trangthaithanhtoan: 1 })
+          .select({
+            _id: 1,
+            trangthai: 1,
+            trangthaithanhtoan: 1,
+            thoiGianKetThucQuangCao: 1,
+            type: 1,
+            id_user: 1,
+            ngayduyettin: 1,
+            price: 1,
+            tieude: 1,
+            tinhtrang: 1,
+            img: { $slice: 1 }, // Chỉ lấy img[0]
+          })
           .sort({ thoiGianKetThucQuangCao: -1 })
           .limit(items_per_page)
           .exec(),
         Phuong_tien.find({ trangthai: 2, trangthaithanhtoan: 1 })
+          .select({
+            _id: 1,
+            trangthai: 1,
+            trangthaithanhtoan: 1,
+            thoiGianKetThucQuangCao: 1,
+            type: 1,
+            id_user: 1,
+            ngayduyettin: 1,
+            price: 1,
+            tieude: 1,
+            tinhtrang: 1,
+            img: { $slice: 1 }, // Chỉ lấy img[0]
+          })
           .sort({ thoiGianKetThucQuangCao: -1 })
           .limit(items_per_page)
           .exec(),
         Do_dien_tu.find({ trangthai: 2, trangthaithanhtoan: 1 })
+          .select({
+            _id: 1,
+            trangthai: 1,
+            trangthaithanhtoan: 1,
+            thoiGianKetThucQuangCao: 1,
+            type: 1,
+            id_user: 1,
+            ngayduyettin: 1,
+            price: 1,
+            tieude: 1,
+            tinhtrang: 1,
+            img: { $slice: 1 }, // Chỉ lấy img[0]
+          })
           .sort({ thoiGianKetThucQuangCao: -1 })
           .limit(items_per_page)
           .exec(),
         Do_noi_that.find({ trangthai: 2, trangthaithanhtoan: 1 })
+          .select({
+            _id: 1,
+            trangthai: 1,
+            trangthaithanhtoan: 1,
+            thoiGianKetThucQuangCao: 1,
+            type: 1,
+            id_user: 1,
+            ngayduyettin: 1,
+            price: 1,
+            tieude: 1,
+            tinhtrang: 1,
+            img: { $slice: 1 }, // Chỉ lấy img[0]
+          })
           .sort({ thoiGianKetThucQuangCao: -1 })
           .limit(items_per_page)
           .exec(),
         Dien_lanh.find({ trangthai: 2, trangthaithanhtoan: 1 })
+          .select({
+            _id: 1,
+            trangthai: 1,
+            trangthaithanhtoan: 1,
+            thoiGianKetThucQuangCao: 1,
+            type: 1,
+            id_user: 1,
+            ngayduyettin: 1,
+            price: 1,
+            tieude: 1,
+            tinhtrang: 1,
+            img: { $slice: 1 }, // Chỉ lấy img[0]
+          })
           .sort({ thoiGianKetThucQuangCao: -1 })
           .limit(items_per_page)
           .exec(),
         Do_ca_nhan.find({ trangthai: 2, trangthaithanhtoan: 1 })
+          .select({
+            _id: 1,
+            trangthai: 1,
+            trangthaithanhtoan: 1,
+            thoiGianKetThucQuangCao: 1,
+            type: 1,
+            id_user: 1,
+            ngayduyettin: 1,
+            price: 1,
+            tieude: 1,
+            tinhtrang: 1,
+            img: { $slice: 1 }, // Chỉ lấy img[0]
+          })
           .sort({ thoiGianKetThucQuangCao: -1 })
           .limit(items_per_page)
           .exec(),
         Do_giai_tri.find({ trangthai: 2, trangthaithanhtoan: 1 })
+          .select({
+            _id: 1,
+            trangthai: 1,
+            trangthaithanhtoan: 1,
+            thoiGianKetThucQuangCao: 1,
+            type: 1,
+            id_user: 1,
+            ngayduyettin: 1,
+            price: 1,
+            tieude: 1,
+            tinhtrang: 1,
+            img: { $slice: 1 }, // Chỉ lấy img[0]
+          })
           .sort({ thoiGianKetThucQuangCao: -1 })
           .limit(items_per_page)
           .exec(),
         Thu_cung.find({ trangthai: 2, trangthaithanhtoan: 1 })
+          .select({
+            _id: 1,
+            trangthai: 1,
+            trangthaithanhtoan: 1,
+            thoiGianKetThucQuangCao: 1,
+            type: 1,
+            id_user: 1,
+            ngayduyettin: 1,
+            price: 1,
+            tieude: 1,
+            tinhtrang: 1,
+            img: { $slice: 1 }, // Chỉ lấy img[0]
+          })
           .sort({ thoiGianKetThucQuangCao: -1 })
           .limit(items_per_page)
           .exec(),
@@ -428,34 +532,138 @@ class AdminController {
       //moi collection lay tin moi nhat
       const all_collection = await Promise.all([
         Hoc_tap.find({ trangthai: 2 })
+          .select({
+            _id: 1,
+            trangthai: 1,
+            trangthaithanhtoan: 1,
+            thoiGianKetThucQuangCao: 1,
+            type: 1,
+            id_user: 1,
+            ngayduyettin: 1,
+            price: 1,
+            tieude: 1,
+            tinhtrang: 1,
+            img: { $slice: 1 }, // Chỉ lấy img[0]
+          })
           .sort({ ngayduyettin: -1 })
           .limit(items_per_page)
           .exec(),
         Phuong_tien.find({ trangthai: 2 })
+          .select({
+            _id: 1,
+            trangthai: 1,
+            trangthaithanhtoan: 1,
+            thoiGianKetThucQuangCao: 1,
+            type: 1,
+            id_user: 1,
+            ngayduyettin: 1,
+            price: 1,
+            tieude: 1,
+            tinhtrang: 1,
+            img: { $slice: 1 }, // Chỉ lấy img[0]
+          })
           .sort({ ngayduyettin: -1 })
           .limit(items_per_page)
           .exec(),
         Do_dien_tu.find({ trangthai: 2 })
+          .select({
+            _id: 1,
+            trangthai: 1,
+            trangthaithanhtoan: 1,
+            thoiGianKetThucQuangCao: 1,
+            type: 1,
+            id_user: 1,
+            ngayduyettin: 1,
+            price: 1,
+            tieude: 1,
+            tinhtrang: 1,
+            img: { $slice: 1 }, // Chỉ lấy img[0]
+          })
           .sort({ ngayduyettin: -1 })
           .limit(items_per_page)
           .exec(),
         Do_noi_that.find({ trangthai: 2 })
+          .select({
+            _id: 1,
+            trangthai: 1,
+            trangthaithanhtoan: 1,
+            thoiGianKetThucQuangCao: 1,
+            type: 1,
+            id_user: 1,
+            ngayduyettin: 1,
+            price: 1,
+            tieude: 1,
+            tinhtrang: 1,
+            img: { $slice: 1 }, // Chỉ lấy img[0]
+          })
           .sort({ ngayduyettin: -1 })
           .limit(items_per_page)
           .exec(),
         Dien_lanh.find({ trangthai: 2 })
+          .select({
+            _id: 1,
+            trangthai: 1,
+            trangthaithanhtoan: 1,
+            thoiGianKetThucQuangCao: 1,
+            type: 1,
+            id_user: 1,
+            ngayduyettin: 1,
+            price: 1,
+            tieude: 1,
+            tinhtrang: 1,
+            img: { $slice: 1 }, // Chỉ lấy img[0]
+          })
           .sort({ ngayduyettin: -1 })
           .limit(items_per_page)
           .exec(),
         Do_ca_nhan.find({ trangthai: 2 })
+          .select({
+            _id: 1,
+            trangthai: 1,
+            trangthaithanhtoan: 1,
+            thoiGianKetThucQuangCao: 1,
+            type: 1,
+            id_user: 1,
+            ngayduyettin: 1,
+            price: 1,
+            tieude: 1,
+            tinhtrang: 1,
+            img: { $slice: 1 }, // Chỉ lấy img[0]
+          })
           .sort({ ngayduyettin: -1 })
           .limit(items_per_page)
           .exec(),
         Do_giai_tri.find({ trangthai: 2 })
+          .select({
+            _id: 1,
+            trangthai: 1,
+            trangthaithanhtoan: 1,
+            thoiGianKetThucQuangCao: 1,
+            type: 1,
+            id_user: 1,
+            ngayduyettin: 1,
+            price: 1,
+            tieude: 1,
+            tinhtrang: 1,
+            img: { $slice: 1 }, // Chỉ lấy img[0]
+          })
           .sort({ ngayduyettin: -1 })
           .limit(items_per_page)
           .exec(),
         Thu_cung.find({ trangthai: 2 })
+          .select({
+            _id: 1,
+            trangthai: 1,
+            trangthaithanhtoan: 1,
+            thoiGianKetThucQuangCao: 1,
+            type: 1,
+            id_user: 1,
+            ngayduyettin: 1,
+            price: 1,
+            tieude: 1,
+            tinhtrang: 1,
+            img: { $slice: 1 }, // Chỉ lấy img[0]
+          })
           .sort({ ngayduyettin: -1 })
           .limit(items_per_page)
           .exec(),
@@ -607,6 +815,27 @@ class AdminController {
                     else: 0,
                   },
                 },
+                img: [
+                  {
+                    $arrayElemAt: ["$img", 0],
+                  },
+                ],
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                trangthai: 1,
+                trangthaithanhtoan: 1,
+                thoiGianKetThucQuangCao: 1,
+                type: 1,
+                id_user: 1,
+                ngayduyettin: 1,
+                price: 1,
+                tieude: 1,
+                tinhtrang: 1,
+                img: 1,
+                tralendauList: 1,
               },
             },
             {
@@ -684,6 +913,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -828,6 +1078,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -993,6 +1264,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -1073,6 +1365,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -1154,6 +1467,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -1232,6 +1566,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -1307,6 +1662,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -1381,6 +1757,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -1455,6 +1852,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -1529,6 +1947,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -1640,6 +2079,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -1778,6 +2238,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -1854,6 +2335,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -1929,6 +2431,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -2004,6 +2527,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -2078,6 +2622,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -2151,6 +2716,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -2262,6 +2848,27 @@ class AdminController {
                     else: 0,
                   },
                 },
+                img: [
+                  {
+                    $arrayElemAt: ["$img", 0],
+                  },
+                ],
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                trangthai: 1,
+                trangthaithanhtoan: 1,
+                thoiGianKetThucQuangCao: 1,
+                type: 1,
+                id_user: 1,
+                ngayduyettin: 1,
+                price: 1,
+                tieude: 1,
+                tinhtrang: 1,
+                img: 1,
+                tralendauList: 1,
               },
             },
             {
@@ -2329,6 +2936,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -2428,6 +3056,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -2561,6 +3210,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -2635,6 +3305,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -2710,6 +3401,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -2822,6 +3534,27 @@ class AdminController {
                     else: 0,
                   },
                 },
+                img: [
+                  {
+                    $arrayElemAt: ["$img", 0],
+                  },
+                ],
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                trangthai: 1,
+                trangthaithanhtoan: 1,
+                thoiGianKetThucQuangCao: 1,
+                type: 1,
+                id_user: 1,
+                ngayduyettin: 1,
+                price: 1,
+                tieude: 1,
+                tinhtrang: 1,
+                img: 1,
+                tralendauList: 1,
               },
             },
             {
@@ -2894,6 +3627,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -3004,6 +3758,27 @@ class AdminController {
                     else: 0,
                   },
                 },
+                img: [
+                  {
+                    $arrayElemAt: ["$img", 0],
+                  },
+                ],
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                trangthai: 1,
+                trangthaithanhtoan: 1,
+                thoiGianKetThucQuangCao: 1,
+                type: 1,
+                id_user: 1,
+                ngayduyettin: 1,
+                price: 1,
+                tieude: 1,
+                tinhtrang: 1,
+                img: 1,
+                tralendauList: 1,
               },
             },
             {
@@ -3075,6 +3850,27 @@ class AdminController {
                   else: 0,
                 },
               },
+              img: [
+                {
+                  $arrayElemAt: ["$img", 0],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              trangthai: 1,
+              trangthaithanhtoan: 1,
+              thoiGianKetThucQuangCao: 1,
+              type: 1,
+              id_user: 1,
+              ngayduyettin: 1,
+              price: 1,
+              tieude: 1,
+              tinhtrang: 1,
+              img: 1,
+              tralendauList: 1,
             },
           },
           {
@@ -3185,6 +3981,27 @@ class AdminController {
                     else: 0,
                   },
                 },
+                img: [
+                  {
+                    $arrayElemAt: ["$img", 0],
+                  },
+                ],
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                trangthai: 1,
+                trangthaithanhtoan: 1,
+                thoiGianKetThucQuangCao: 1,
+                type: 1,
+                id_user: 1,
+                ngayduyettin: 1,
+                price: 1,
+                tieude: 1,
+                tinhtrang: 1,
+                img: 1,
+                tralendauList: 1,
               },
             },
             {
