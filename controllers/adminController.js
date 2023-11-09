@@ -113,6 +113,29 @@ class AdminController {
       }
     }
   };
+  // check tồn tại account
+  check_account = async (req, res, next) => {
+    const account = req.body.account;
+    if (!account) {
+      return res.status(200).json({
+        errCode: 1,
+        message: "Giá trị account rỗng",
+      });
+    } else {
+      const user = await User.findOne({ account: account });
+      if (user) {
+        return res.status(200).json({
+          errCode: 0,
+          message: "Có account này tồn tại trong database",
+        });
+      } else {
+        return res.status(200).json({
+          errCode: 2,
+          message: "Tài khoản không tồn tại",
+        });
+      }
+    }
+  };
   // Lấy tất cả user
   getAllUser(req, res, next) {
     User.find()
@@ -214,6 +237,28 @@ class AdminController {
         errCode: 1,
         message: "Không có thông tin account và password",
       });
+    }
+  };
+  // cập nhật password
+  update_new_password = async (req, res, next) => {
+    const { account, newpassword } = req.body;
+    if (!account || !newpassword) {
+      res.status(200).json({
+        errCode: 1,
+        message: "Thiếu tham số đầu vào",
+      });
+    } else {
+      let hash_newPassword = bcrypt.hashSync(newpassword, salt);
+      let acc = await User.findOne({ account: account });
+      acc.password = hash_newPassword;
+      if (acc) {
+        User.updateOne({ account: account }, acc).then(() => {
+          return res.json({
+            errCode: 0,
+            message: "Khôi phục mật khẩu mới thành công",
+          });
+        });
+      }
     }
   };
 
@@ -5336,7 +5381,6 @@ class AdminController {
       const year = date.getFullYear();
       return `${day}/${month}/${year}`;
     }
-
     const { id, typeTindang } = req.body;
     const validTypes_dohoctap = ["giaotrinh", "sachthamkhao", "other_hoctap"];
     const validTypes_dodientu = [

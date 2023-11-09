@@ -10,6 +10,10 @@ const {
 router.post("/login", adminController.login);
 // Register
 router.post("/register-user", adminController.registerUser);
+// check account trước khi sendOTP khôi phục mật khẩu
+router.post("/check-account", adminController.check_account);
+// Cập nhật password mới (khôi phục mật khẩu)
+router.put("/update-new-password", adminController.update_new_password);
 // Lấy tin đăng cho homepage
 router.post("/get-all-collection", adminController.getALL_collection);
 // Lấy tin đăng quảng cáo cho homepage
