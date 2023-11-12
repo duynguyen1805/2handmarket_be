@@ -1196,12 +1196,12 @@ class AdminController {
                   ngayduyettin: -1,
                 },
               },
-              {
-                $skip: (pagehientai - 1) * soluong_int,
-              },
-              {
-                $limit: soluong_int,
-              },
+              // {
+              //   $skip: (pagehientai - 1) * soluong_int,
+              // },
+              // {
+              //   $limit: soluong_int,
+              // },
             ];
           } else {
             pipeline = [
@@ -1213,12 +1213,12 @@ class AdminController {
                   ngayduyettin: -1,
                 },
               },
-              {
-                $skip: (pagehientai - 1) * soluong_int,
-              },
-              {
-                $limit: soluong_int,
-              },
+              // {
+              //   $skip: (pagehientai - 1) * soluong_int,
+              // },
+              // {
+              //   $limit: soluong_int,
+              // },
             ];
           }
           const countDocumentsPromise = new Promise((resolve, reject) => {
@@ -2200,12 +2200,12 @@ class AdminController {
                   ngayduyettin: -1,
                 },
               },
-              {
-                $skip: (pagehientai - 1) * soluong_int,
-              },
-              {
-                $limit: soluong_int,
-              },
+              // {
+              //   $skip: (pagehientai - 1) * soluong_int,
+              // },
+              // {
+              //   $limit: soluong_int,
+              // },
             ];
           } else {
             pipeline = [
@@ -2217,12 +2217,12 @@ class AdminController {
                   ngayduyettin: -1,
                 },
               },
-              {
-                $skip: (pagehientai - 1) * soluong_int,
-              },
-              {
-                $limit: soluong_int,
-              },
+              // {
+              //   $skip: (pagehientai - 1) * soluong_int,
+              // },
+              // {
+              //   $limit: soluong_int,
+              // },
             ];
           }
           const countDocumentsPromise = new Promise((resolve, reject) => {
@@ -3175,12 +3175,12 @@ class AdminController {
                   ngayduyettin: -1,
                 },
               },
-              {
-                $skip: (pagehientai - 1) * soluong_int,
-              },
-              {
-                $limit: soluong_int,
-              },
+              // {
+              //   $skip: (pagehientai - 1) * soluong_int,
+              // },
+              // {
+              //   $limit: soluong_int,
+              // },
             ];
           } else {
             pipeline = [
@@ -3192,12 +3192,12 @@ class AdminController {
                   ngayduyettin: -1,
                 },
               },
-              {
-                $skip: (pagehientai - 1) * soluong_int,
-              },
-              {
-                $limit: soluong_int,
-              },
+              // {
+              //   $skip: (pagehientai - 1) * soluong_int,
+              // },
+              // {
+              //   $limit: soluong_int,
+              // },
             ];
           }
           const countDocumentsPromise = new Promise((resolve, reject) => {
