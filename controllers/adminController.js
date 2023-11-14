@@ -6010,7 +6010,7 @@ class AdminController {
           search_Thucung,
         ] = await Promise.all([
           Hoc_tap.find({
-            tieude: { $regex: keyword, $options: "i" },
+            $or: [{ tieude: { $regex: keyword, $options: "i" } }],
             trangthai: 2,
           }),
           Do_dien_tu.find({
@@ -6030,7 +6030,7 @@ class AdminController {
             trangthai: 2,
           }),
           Do_noi_that.find({
-            tieude: { $regex: keyword, $options: "i" },
+            $or: [{ tieude: { $regex: keyword, $options: "i" } }],
             trangthai: 2,
           }),
           Dien_lanh.find({
@@ -6041,15 +6041,15 @@ class AdminController {
             trangthai: 2,
           }),
           Do_ca_nhan.find({
-            tieude: { $regex: keyword, $options: "i" },
+            $or: [{ tieude: { $regex: keyword, $options: "i" } }],
             trangthai: 2,
           }),
           Do_giai_tri.find({
-            tieude: { $regex: keyword, $options: "i" },
+            $or: [{ tieude: { $regex: keyword, $options: "i" } }],
             trangthai: 2,
           }),
           Thu_cung.find({
-            tieude: { $regex: keyword, $options: "i" },
+            $or: [{ tieude: { $regex: keyword, $options: "i" } }],
             trangthai: 2,
           }),
         ]);
