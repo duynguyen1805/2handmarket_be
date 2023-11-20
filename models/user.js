@@ -13,16 +13,16 @@ const User = new mongoose.Schema(
     },
     account: {
       type: String,
-      required: true,
+      required: false,
       unique: true,
     },
     password: {
       type: String,
-      required: true,
+      required: false,
     },
     address: {
       type: String,
-      required: true,
+      required: false,
     },
     role: {
       type: String,
@@ -31,6 +31,11 @@ const User = new mongoose.Schema(
     img: {
       type: String,
       require: false,
+    },
+    email: {
+      type: String,
+      require: false,
+      unique: true,
     },
   },
   {

@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const { MongooseObject, mutiMongooseObject } = require("../util/Mongoose");
+const { ObjectId } = require("mongodb");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const unidecode = require("unidecode");
@@ -23,28 +24,89 @@ const { createJWT } = require("../middleware/JWT");
 class AdminController {
   // NGƯỜI DÙNG
   // Đăng ký user
+  // registerUser = async (req, res, next) => {
+  //   if (req.body) {
+  //     const user = await User.findOne({ account: req.body.account });
+  //     if (user) {
+  //       return res.status(200).json({
+  //         errCode: 2,
+  //         message: "Tài khoản đã tồn tại",
+  //       });
+  //     } else {
+  //       let hashPassword = await bcrypt.hashSync(req.body.password, salt);
+  //       req.body.password = hashPassword;
+  //       // Lưu user
+  //       req.body = new User(req.body);
+  //       req.body
+  //         .save()
+  //         .then(async () => {
+  //           res.json({
+  //             errCode: 0,
+  //             message: "Đăng ký tài khoản thành công.",
+  //           });
+  //         })
+  //         .catch(next);
+  //     }
+  //   } else {
+  //     return res.status(200).json({
+  //       errCode: 1,
+  //       message: "Thông tin rỗng, vui lòng nhập lại",
+  //     });
+  //   }
+  // };
   registerUser = async (req, res, next) => {
+    const { account, password, _id, email } = req.body; // _id có 21ký tự nhưng ObjectId cần 24ký tự
     if (req.body) {
-      const user = await User.findOne({ account: req.body.account });
-      if (user) {
-        return res.status(200).json({
-          errCode: 2,
-          message: "Tài khoản đã tồn tại",
-        });
-      } else {
-        let hashPassword = await bcrypt.hashSync(req.body.password, salt);
-        req.body.password = hashPassword;
-        // Lưu user
-        req.body = new User(req.body);
-        req.body
-          .save()
-          .then(async () => {
-            res.json({
-              errCode: 0,
-              message: "Đăng ký tài khoản thành công.",
+      try {
+        // người dùng đăng ký account và password
+        if (account && password) {
+          let user = await User.findOne({
+            account: account,
+          });
+          if (user) {
+            return res.status(200).json({
+              errCode: 2,
+              message: "Tài khoản đã tồn tại",
+              user: user,
             });
-          })
-          .catch(next);
+          } else {
+            let hashPassword = await bcrypt.hashSync(req.body.password, salt);
+            req.body.password = hashPassword;
+            req.body = new User(req.body);
+            await req.body.save().then(() => {
+              res.json({
+                errCode: 0,
+                message: "Đăng ký tài khoản thành công.",
+              });
+            });
+          }
+        }
+        // lưu thông tin google người dùng
+        if (_id && email) {
+          let user = await User.findOne({
+            email: email,
+          });
+          if (user) {
+            return res.status(200).json({
+              errCode: 2,
+              message: "Email này đã tồn tại",
+              user: user,
+            });
+          } else {
+            // let formated_id = `${_id}${"acc"}`;
+            const objectIdFromId = new ObjectId(_id);
+            req.body._id = objectIdFromId;
+            req.body = new User(req.body);
+            await req.body.save().then(() => {
+              res.json({
+                errCode: 0,
+                message: "Lưu thông tin login google thành công",
+              });
+            });
+          }
+        }
+      } catch (error) {
+        next(error);
       }
     } else {
       return res.status(200).json({
@@ -4448,6 +4510,7 @@ class AdminController {
     }
   };
   // lấy tin đăng của 1 người dùng
+  // fix case id_google không có trong dbUser
   getTindangbyIdUser = async (req, res, next) => {
     try {
       const { id } = req.body;
