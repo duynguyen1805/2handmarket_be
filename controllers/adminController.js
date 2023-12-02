@@ -5521,14 +5521,24 @@ class AdminController {
 
             await Hoc_tap.updateOne({ _id: id }, tindang)
               .then(() => {
-                return res.json({
+                return res.status(200).json({
                   errCode: 0,
                   message: "Cập nhật trangthaithanhtoan thành công",
                   trangthaithanhtoan: tindang.trangthaithanhtoan,
                 });
               })
               .catch(next);
+          } else {
+            return res.status(404).json({
+              errCode: 1,
+              message: "Không tìm thấy người đăng tin này",
+            });
           }
+        } else {
+          return res.status(404).json({
+            errCode: 1,
+            message: "Không tìm thấy tin đăng trùng khớp",
+          });
         }
       }
       if (validTypes_dodientu.includes(typeTindang)) {
@@ -5567,7 +5577,17 @@ class AdminController {
                 });
               })
               .catch(next);
+          } else {
+            return res.status(404).json({
+              errCode: 1,
+              message: "Không tìm thấy người đăng tin này",
+            });
           }
+        } else {
+          return res.status(404).json({
+            errCode: 1,
+            message: "Không tìm đăng tin này",
+          });
         }
       }
       if (validTypes_phuongtien.includes(typeTindang)) {
@@ -5606,7 +5626,17 @@ class AdminController {
                 });
               })
               .catch(next);
+          } else {
+            return res.status(404).json({
+              errCode: 1,
+              message: "Không tìm thấy người đăng tin này",
+            });
           }
+        } else {
+          return res.status(404).json({
+            errCode: 1,
+            message: "Không tìm thấy đăng tin này",
+          });
         }
       }
       if (validTypes_donoithat.includes(typeTindang)) {
@@ -5645,7 +5675,17 @@ class AdminController {
                 });
               })
               .catch(next);
+          } else {
+            return res.status(404).json({
+              errCode: 1,
+              message: "Không tìm thấy người đăng tin này",
+            });
           }
+        } else {
+          return res.status(404).json({
+            errCode: 1,
+            message: "Không tìm thấy đăng tin này",
+          });
         }
       }
       if (validTypes_dienlanh.includes(typeTindang)) {
@@ -5684,7 +5724,17 @@ class AdminController {
                 });
               })
               .catch(next);
+          } else {
+            return res.status(404).json({
+              errCode: 1,
+              message: "Không tìm thấy người đăng tin này",
+            });
           }
+        } else {
+          return res.status(404).json({
+            errCode: 1,
+            message: "Không tìm thấy đăng tin này",
+          });
         }
       }
       if (validTypes_docanhan.includes(typeTindang)) {
@@ -5723,7 +5773,17 @@ class AdminController {
                 });
               })
               .catch(next);
+          } else {
+            return res.status(404).json({
+              errCode: 1,
+              message: "Không tìm thấy người đăng tin này",
+            });
           }
+        } else {
+          return res.status(404).json({
+            errCode: 1,
+            message: "Không tìm thấy đăng tin này",
+          });
         }
       }
       if (validTypes_dogiaitri.includes(typeTindang)) {
@@ -5762,7 +5822,17 @@ class AdminController {
                 });
               })
               .catch(next);
+          } else {
+            return res.status(404).json({
+              errCode: 1,
+              message: "Không tìm thấy người đăng tin này",
+            });
           }
+        } else {
+          return res.status(404).json({
+            errCode: 1,
+            message: "Không tìm thấy đăng tin này",
+          });
         }
       }
       if (validTypes_thucung.includes(typeTindang)) {
@@ -5801,11 +5871,21 @@ class AdminController {
                 });
               })
               .catch(next);
+          } else {
+            return res.status(404).json({
+              errCode: 1,
+              message: "Không tìm thấy người đăng tin này",
+            });
           }
+        } else {
+          return res.status(404).json({
+            errCode: 1,
+            message: "Không tìm thấy đăng tin này",
+          });
         }
       }
     } else {
-      return res.status(200).json({
+      return res.status(400).json({
         errCode: 1,
         message: "Thiếu thông tin input update trangthaithanhtoan",
       });
@@ -6060,7 +6140,14 @@ class AdminController {
   Search_tindang_header = async (req, res, next) => {
     const { keyword, pagehientai, soluong } = req.body;
     const soluong_int = parseInt(soluong, 10); // ép kiểu xài postman
-    if (keyword) {
+    const keywordArray = keyword.split(" ");
+    console.log(
+      "check keyword arr: ",
+      keywordArray[0],
+      keywordArray[1],
+      keywordArray[2]
+    );
+    if (keywordArray) {
       try {
         const [
           search_Hoctap,
@@ -6072,47 +6159,131 @@ class AdminController {
           search_Dogiaitri,
           search_Thucung,
         ] = await Promise.all([
+          // Hoc_tap.find({
+          //   $or: [
+          //     { type: { $regex: keyword, $options: "i" } },
+          //     { truong: { $regex: keyword, $options: "i" } },
+          //     { nganh: { $regex: keyword, $options: "i" } },
+          //   ],
+          //   trangthai: 2,
+          // }),
+          // Do_dien_tu.find({
+          //   $or: [
+          //     { type: { $regex: keyword, $options: "i" } },
+          //     { dongmay: { $regex: keyword, $options: "i" } },
+          //     { hang: { $regex: keyword, $options: "i" } },
+          //   ],
+          //   trangthai: 2,
+          // }),
+          // Phuong_tien.find({
+          //   $or: [
+          //     { type: { $regex: keyword, $options: "i" } },
+          //     { dongxe: { $regex: keyword, $options: "i" } },
+          //     { hang: { $regex: keyword, $options: "i" } },
+          //   ],
+          //   trangthai: 2,
+          // }),
+          // Do_noi_that.find({
+          //   $or: [{ type: { $regex: keyword, $options: "i" } }],
+          //   trangthai: 2,
+          // }),
+          // Dien_lanh.find({
+          //   $or: [
+          //     { type: { $regex: keyword, $options: "i" } },
+          //     { hang: { $regex: keyword, $options: "i" } },
+          //   ],
+          //   trangthai: 2,
+          // }),
+          // Do_ca_nhan.find({
+          //   $or: [{ type: { $regex: keyword, $options: "i" } }],
+          //   trangthai: 2,
+          // }),
+          // Do_giai_tri.find({
+          //   $or: [{ type: { $regex: keyword, $options: "i" } }],
+          //   trangthai: 2,
+          // }),
+          // Thu_cung.find({
+          //   $or: [{ type: { $regex: keyword, $options: "i" } }],
+          //   trangthai: 2,
+          // }),
+          //-------------------------------------------------------------------
           Hoc_tap.find({
-            $or: [{ tieude: { $regex: keyword, $options: "i" } }],
+            $or: [
+              {
+                $and: [
+                  { type: { $in: keywordArray } },
+                  { truong: { $in: keywordArray } },
+                ],
+              },
+              {
+                nganh: keyword,
+              },
+            ],
             trangthai: 2,
           }),
           Do_dien_tu.find({
             $or: [
-              { tieude: { $regex: keyword, $options: "i" } },
-              { dongmay: { $regex: keyword, $options: "i" } },
-              { hang: { $regex: keyword, $options: "i" } },
+              {
+                $and: [
+                  { type: { $in: keywordArray } },
+                  { hang: { $in: keywordArray } },
+                ],
+              },
+              {
+                $or: [
+                  { dongmay: keyword },
+                  { cpu: keyword },
+                  { loaimayanh: keyword },
+                  { loailinhkien: keyword },
+                  { loaiphukien: keyword },
+                  { loaithietbideo: keyword },
+                ],
+              },
             ],
             trangthai: 2,
           }),
           Phuong_tien.find({
             $or: [
-              { tieude: { $regex: keyword, $options: "i" } },
-              { dongxe: { $regex: keyword, $options: "i" } },
-              { hang: { $regex: keyword, $options: "i" } },
+              {
+                $and: [
+                  { type: { $in: keywordArray } },
+                  { hang: { $in: keywordArray } },
+                ],
+              },
+              {
+                $or: [{ dongxe: keyword }, { loaiphutung: keyword }],
+              },
             ],
             trangthai: 2,
           }),
           Do_noi_that.find({
-            $or: [{ tieude: { $regex: keyword, $options: "i" } }],
+            $or: [{ type: keyword }],
             trangthai: 2,
           }),
           Dien_lanh.find({
             $or: [
-              { tieude: { $regex: keyword, $options: "i" } },
-              { hang: { $regex: keyword, $options: "i" } },
+              {
+                $and: [
+                  { type: { $in: keywordArray } },
+                  { hang: { $in: keywordArray } },
+                ],
+              },
+              {
+                $or: [{ type: keyword }],
+              },
             ],
             trangthai: 2,
           }),
           Do_ca_nhan.find({
-            $or: [{ tieude: { $regex: keyword, $options: "i" } }],
+            $or: [{ type: keyword }],
             trangthai: 2,
           }),
           Do_giai_tri.find({
-            $or: [{ tieude: { $regex: keyword, $options: "i" } }],
+            $or: [{ type: keyword }],
             trangthai: 2,
           }),
           Thu_cung.find({
-            $or: [{ tieude: { $regex: keyword, $options: "i" } }],
+            $or: [{ type: keyword }],
             trangthai: 2,
           }),
         ]);
@@ -6178,7 +6349,29 @@ class AdminController {
     } catch (error) {
       res.status(200).json({
         error: 1,
-        message: "Lấy getALL bị lỗi",
+        message: "searchLichsu_Quangcao bị lỗi",
+      });
+    }
+  };
+
+  search_user = async (req, res, next) => {
+    const value = req.body.value;
+    try {
+      User.find({
+        $or: [
+          { account: { $regex: value, $options: "i" } },
+          { name: { $regex: value, $options: "i" } },
+          { email: { $regex: value, $options: "i" } },
+        ],
+      }).then((resultSearch) => {
+        res.json({
+          resultSearch: mutiMongooseObject(resultSearch),
+        });
+      });
+    } catch (error) {
+      res.status(200).json({
+        error: 1,
+        message: "search_user bị lỗi",
       });
     }
   };

@@ -68,11 +68,11 @@ router.delete(
   check_user_login,
   adminController.deleteBaidang
 );
-router.put(
-  "/update-status-thanhtoan",
-  check_user_login,
-  adminController.updateTrangthai_thanhtoan
-);
+// router.put(
+//   "/update-status-thanhtoan",
+//   check_user_login,
+//   adminController.updateTrangthai_thanhtoan
+// );
 // Cập nhật thông tin người dùng
 router.put("/update-user", check_user_login, adminController.updateUser);
 
@@ -97,6 +97,13 @@ router.delete(
   check_user_login,
   check_user_permission,
   adminController.deleteUser
+);
+// search thông tin tài khoản người dùng
+router.post(
+  "/admin/get-infor-user",
+  check_user_login,
+  check_user_permission,
+  adminController.search_user
 );
 // lấy danh sách tin đăng ĐÃ sử dụng quảng cáo
 router.post(
