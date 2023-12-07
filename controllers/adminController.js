@@ -24,36 +24,6 @@ const { createJWT } = require("../middleware/JWT");
 class AdminController {
   // NGƯỜI DÙNG
   // Đăng ký user
-  // registerUser = async (req, res, next) => {
-  //   if (req.body) {
-  //     const user = await User.findOne({ account: req.body.account });
-  //     if (user) {
-  //       return res.status(200).json({
-  //         errCode: 2,
-  //         message: "Tài khoản đã tồn tại",
-  //       });
-  //     } else {
-  //       let hashPassword = await bcrypt.hashSync(req.body.password, salt);
-  //       req.body.password = hashPassword;
-  //       // Lưu user
-  //       req.body = new User(req.body);
-  //       req.body
-  //         .save()
-  //         .then(async () => {
-  //           res.json({
-  //             errCode: 0,
-  //             message: "Đăng ký tài khoản thành công.",
-  //           });
-  //         })
-  //         .catch(next);
-  //     }
-  //   } else {
-  //     return res.status(200).json({
-  //       errCode: 1,
-  //       message: "Thông tin rỗng, vui lòng nhập lại",
-  //     });
-  //   }
-  // };
   registerUser = async (req, res, next) => {
     const { account, password, _id, email } = req.body; // _id có 21ký tự nhưng ObjectId cần 24ký tự
     if (req.body) {
@@ -227,6 +197,65 @@ class AdminController {
       });
     }
   };
+
+  //Lấy thông báo người dùng
+  get_noti_userID = async (req, res, next) => {
+    if (req.body) {
+      try {
+        const user = await User.findOne({ _id: req.body.id }).select(
+          "-password"
+        );
+
+        if (user) {
+          res.status(200).json({
+            thongbao: user.thongbao,
+          });
+        } else {
+          res.status(200).json({
+            errCode: 1,
+            mess: "Người dùng không tồn tại.",
+          });
+        }
+      } catch (error) {
+        next(error);
+      }
+    } else {
+      return res.status(500).json({
+        errCode: 1,
+        mess: "Lấy thông tin người dùng bị lỗi.",
+      });
+    }
+  };
+
+  delete_noti_userID = async (req, res, next) => {
+    const userId = req.params.id_user;
+    const idTindang = req.params.id_tindang;
+    const trangthaitin = req.params.trangthaitin;
+    try {
+      const result = await User.updateOne(
+        { _id: userId },
+        {
+          $pull: {
+            thongbao: { id_tindang: idTindang },
+          },
+        }
+      );
+      if (result.nModified > 0) {
+        return res.status(200).json({
+          errCode: 0,
+          message: `Xóa thông báo thành công`,
+        });
+      } else {
+        return res.status(404).json({
+          errCode: 1,
+          message: `Không tìm thấy thông báo có id_tindang ${idTindang}`,
+        });
+      }
+    } catch (error) {
+      next(error);
+    }
+  };
+
   // Xóa người dùng
   deleteUser(req, res, next) {
     User.deleteOne({ _id: req.params.id })
@@ -1247,7 +1276,7 @@ class AdminController {
             trangthai: 2,
           };
           let pipeline = [];
-          if (trangthai) {
+          if (trangthai == 1) {
             filter.trangthai = trangthai;
             pipeline = [
               {
@@ -1258,30 +1287,27 @@ class AdminController {
                   ngayduyettin: -1,
                 },
               },
-              // {
-              //   $skip: (pagehientai - 1) * soluong_int,
-              // },
-              // {
-              //   $limit: soluong_int,
-              // },
             ];
           } else {
-            pipeline = [
-              {
-                $match: filter,
-              },
-              {
-                $sort: {
-                  ngayduyettin: -1,
+            if (trangthai == 2 || trangthai == 3 || trangthai == 4) {
+              filter.trangthai = trangthai;
+              pipeline = [
+                {
+                  $match: filter,
                 },
-              },
-              // {
-              //   $skip: (pagehientai - 1) * soluong_int,
-              // },
-              // {
-              //   $limit: soluong_int,
-              // },
-            ];
+                {
+                  $sort: {
+                    ngayduyettin: -1,
+                  },
+                },
+                {
+                  $skip: (pagehientai - 1) * soluong_int,
+                },
+                {
+                  $limit: soluong_int,
+                },
+              ];
+            }
           }
           const countDocumentsPromise = new Promise((resolve, reject) => {
             Do_dien_tu.countDocuments(filter)
@@ -2251,7 +2277,7 @@ class AdminController {
             trangthai: 2,
           };
           let pipeline = [];
-          if (trangthai) {
+          if (trangthai == 1) {
             filter.trangthai = trangthai;
             pipeline = [
               {
@@ -2262,30 +2288,27 @@ class AdminController {
                   ngayduyettin: -1,
                 },
               },
-              // {
-              //   $skip: (pagehientai - 1) * soluong_int,
-              // },
-              // {
-              //   $limit: soluong_int,
-              // },
             ];
           } else {
-            pipeline = [
-              {
-                $match: filter,
-              },
-              {
-                $sort: {
-                  ngayduyettin: -1,
+            if (trangthai == 2 || trangthai == 3 || trangthai == 4) {
+              filter.trangthai = trangthai;
+              pipeline = [
+                {
+                  $match: filter,
                 },
-              },
-              // {
-              //   $skip: (pagehientai - 1) * soluong_int,
-              // },
-              // {
-              //   $limit: soluong_int,
-              // },
-            ];
+                {
+                  $sort: {
+                    ngayduyettin: -1,
+                  },
+                },
+                {
+                  $skip: (pagehientai - 1) * soluong_int,
+                },
+                {
+                  $limit: soluong_int,
+                },
+              ];
+            }
           }
           const countDocumentsPromise = new Promise((resolve, reject) => {
             Phuong_tien.countDocuments(filter)
@@ -3226,7 +3249,7 @@ class AdminController {
             trangthai: 2,
           };
           let pipeline = [];
-          if (trangthai) {
+          if (trangthai == 1) {
             filter.trangthai = trangthai;
             pipeline = [
               {
@@ -3237,30 +3260,27 @@ class AdminController {
                   ngayduyettin: -1,
                 },
               },
-              // {
-              //   $skip: (pagehientai - 1) * soluong_int,
-              // },
-              // {
-              //   $limit: soluong_int,
-              // },
             ];
           } else {
-            pipeline = [
-              {
-                $match: filter,
-              },
-              {
-                $sort: {
-                  ngayduyettin: -1,
+            if (trangthai == 2 || trangthai == 3 || trangthai == 4) {
+              filter.trangthai = trangthai;
+              pipeline = [
+                {
+                  $match: filter,
                 },
-              },
-              // {
-              //   $skip: (pagehientai - 1) * soluong_int,
-              // },
-              // {
-              //   $limit: soluong_int,
-              // },
-            ];
+                {
+                  $sort: {
+                    ngayduyettin: -1,
+                  },
+                },
+                {
+                  $skip: (pagehientai - 1) * soluong_int,
+                },
+                {
+                  $limit: soluong_int,
+                },
+              ];
+            }
           }
           const countDocumentsPromise = new Promise((resolve, reject) => {
             Dien_lanh.countDocuments(filter)
@@ -4751,6 +4771,7 @@ class AdminController {
   // (1: doiduyet, 2: daduyet, 3: admintuchoi(kem lido), 4: antin )
   updateTrangthaiDuyettin = async (req, res, next) => {
     const { id, typecollection, lydoantin } = req.body;
+    const socket = req.app.get("socket"); // Lấy đối tượng socket.io từ ứng dụng Express
     if (id && typecollection) {
       if (!lydoantin) {
         if (typecollection === "hoctap") {
@@ -4761,8 +4782,33 @@ class AdminController {
           // tindang.expires_tindang = new Date();
           // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
           if (tindang) {
+            let userId = tindang.id_user;
+            const user = await User.findOne({ _id: userId });
+            if (user) {
+              // tạo
+              const thongbao = {
+                id_tindang: id,
+                tieude: tindang.tieude,
+                trangthai: tindang.trangthai,
+              };
+              // lưu vào mảng thongbao của user
+              user.thongbao.push(thongbao);
+              const res_thongbao = await User.updateOne({ _id: userId }, user);
+              if (res_thongbao) {
+                // Gửi thông báo đến admin
+                socket.emit(`${userId}`, {
+                  message: `Tin đăng ${tindang.tieude} của bạn đã được Duyệt`,
+                });
+              }
+            }
             Hoc_tap.updateOne({ _id: id }, tindang)
               .then(() => {
+                if (socket) {
+                  // Gửi thông báo đến admin
+                  socket.emit(`${userId}`, {
+                    message: `Tin đăng ${tindang.tieude} của bạn đã được Duyệt`,
+                  });
+                }
                 return res.json({
                   errCode: 0,
                   message: "Update trạng thái tin đăng thành công",
@@ -4780,8 +4826,33 @@ class AdminController {
           // tindang.expires_tindang = new Date();
           // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
           if (tindang) {
+            let userId = tindang.id_user;
+            const user = await User.findOne({ _id: userId });
+            if (user) {
+              // tạo
+              const thongbao = {
+                id_tindang: id,
+                tieude: tindang.tieude,
+                trangthai: tindang.trangthai,
+              };
+              // lưu vào mảng thongbao của user
+              user.thongbao.push(thongbao);
+              const res_thongbao = await User.updateOne({ _id: userId }, user);
+              if (res_thongbao) {
+                // Gửi thông báo đến admin
+                socket.emit(`${userId}`, {
+                  message: `Tin đăng ${tindang.tieude} của bạn đã được Duyệt`,
+                });
+              }
+            }
             Do_dien_tu.updateOne({ _id: id }, tindang)
               .then(() => {
+                if (socket) {
+                  // Gửi thông báo đến admin
+                  socket.emit(`${userId}`, {
+                    message: `Tin đăng ${tindang.tieude} của bạn đã được Duyệt`,
+                  });
+                }
                 return res.json({
                   errCode: 0,
                   message: "Update trạng thái tin đăng thành công",
@@ -4799,8 +4870,33 @@ class AdminController {
           // tindang.expires_tindang = new Date();
           // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
           if (tindang) {
+            let userId = tindang.id_user;
+            const user = await User.findOne({ _id: userId });
+            if (user) {
+              // tạo
+              const thongbao = {
+                id_tindang: id,
+                tieude: tindang.tieude,
+                trangthai: tindang.trangthai,
+              };
+              // lưu vào mảng thongbao của user
+              user.thongbao.push(thongbao);
+              const res_thongbao = await User.updateOne({ _id: userId }, user);
+              if (res_thongbao) {
+                // Gửi thông báo đến admin
+                socket.emit(`${userId}`, {
+                  message: `Tin đăng ${tindang.tieude} của bạn đã được Duyệt`,
+                });
+              }
+            }
             Phuong_tien.updateOne({ _id: id }, tindang)
               .then(() => {
+                if (socket) {
+                  // Gửi thông báo đến admin
+                  socket.emit(`${userId}`, {
+                    message: `Tin đăng ${tindang.tieude} của bạn đã được Duyệt`,
+                  });
+                }
                 return res.json({
                   errCode: 0,
                   message: "Update trạng thái tin đăng thành công",
@@ -4818,8 +4914,33 @@ class AdminController {
           // tindang.expires_tindang = new Date();
           // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
           if (tindang) {
+            let userId = tindang.id_user;
+            const user = await User.findOne({ _id: userId });
+            if (user) {
+              // tạo
+              const thongbao = {
+                id_tindang: id,
+                tieude: tindang.tieude,
+                trangthai: tindang.trangthai,
+              };
+              // lưu vào mảng thongbao của user
+              user.thongbao.push(thongbao);
+              const res_thongbao = await User.updateOne({ _id: userId }, user);
+              if (res_thongbao) {
+                // Gửi thông báo đến admin
+                socket.emit(`${userId}`, {
+                  message: `Tin đăng ${tindang.tieude} của bạn đã được Duyệt`,
+                });
+              }
+            }
             Do_noi_that.updateOne({ _id: id }, tindang)
               .then(() => {
+                if (socket) {
+                  // Gửi thông báo đến admin
+                  socket.emit(`${userId}`, {
+                    message: `Tin đăng ${tindang.tieude} của bạn đã được Duyệt`,
+                  });
+                }
                 return res.json({
                   errCode: 0,
                   message: "Update trạng thái tin đăng thành công",
@@ -4837,8 +4958,33 @@ class AdminController {
           // tindang.expires_tindang = new Date();
           // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
           if (tindang) {
+            let userId = tindang.id_user;
+            const user = await User.findOne({ _id: userId });
+            if (user) {
+              // tạo
+              const thongbao = {
+                id_tindang: id,
+                tieude: tindang.tieude,
+                trangthai: tindang.trangthai,
+              };
+              // lưu vào mảng thongbao của user
+              user.thongbao.push(thongbao);
+              const res_thongbao = await User.updateOne({ _id: userId }, user);
+              if (res_thongbao) {
+                // Gửi thông báo đến admin
+                socket.emit(`${userId}`, {
+                  message: `Tin đăng ${tindang.tieude} của bạn đã được Duyệt`,
+                });
+              }
+            }
             Dien_lanh.updateOne({ _id: id }, tindang)
               .then(() => {
+                if (socket) {
+                  // Gửi thông báo đến admin
+                  socket.emit(`${userId}`, {
+                    message: `Tin đăng ${tindang.tieude} của bạn đã được Duyệt`,
+                  });
+                }
                 return res.json({
                   errCode: 0,
                   message: "Update trạng thái tin đăng thành công",
@@ -4856,8 +5002,33 @@ class AdminController {
           // tindang.expires_tindang = new Date();
           // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
           if (tindang) {
+            let userId = tindang.id_user;
+            const user = await User.findOne({ _id: userId });
+            if (user) {
+              // tạo
+              const thongbao = {
+                id_tindang: id,
+                tieude: tindang.tieude,
+                trangthai: tindang.trangthai,
+              };
+              // lưu vào mảng thongbao của user
+              user.thongbao.push(thongbao);
+              const res_thongbao = await User.updateOne({ _id: userId }, user);
+              if (res_thongbao) {
+                // Gửi thông báo đến admin
+                socket.emit(`${userId}`, {
+                  message: `Tin đăng ${tindang.tieude} của bạn đã được Duyệt`,
+                });
+              }
+            }
             Do_ca_nhan.updateOne({ _id: id }, tindang)
               .then(() => {
+                if (socket) {
+                  // Gửi thông báo đến admin
+                  socket.emit(`${userId}`, {
+                    message: `Tin đăng ${tindang.tieude} của bạn đã được Duyệt`,
+                  });
+                }
                 return res.json({
                   errCode: 0,
                   message: "Update trạng thái tin đăng thành công",
@@ -4875,8 +5046,33 @@ class AdminController {
           // tindang.expires_tindang = new Date();
           // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
           if (tindang) {
+            let userId = tindang.id_user;
+            const user = await User.findOne({ _id: userId });
+            if (user) {
+              // tạo
+              const thongbao = {
+                id_tindang: id,
+                tieude: tindang.tieude,
+                trangthai: tindang.trangthai,
+              };
+              // lưu vào mảng thongbao của user
+              user.thongbao.push(thongbao);
+              const res_thongbao = await User.updateOne({ _id: userId }, user);
+              if (res_thongbao) {
+                // Gửi thông báo đến admin
+                socket.emit(`${userId}`, {
+                  message: `Tin đăng ${tindang.tieude} của bạn đã được Duyệt`,
+                });
+              }
+            }
             Do_giai_tri.updateOne({ _id: id }, tindang)
               .then(() => {
+                if (socket) {
+                  // Gửi thông báo đến admin
+                  socket.emit(`${userId}`, {
+                    message: `Tin đăng ${tindang.tieude} của bạn đã được Duyệt`,
+                  });
+                }
                 return res.json({
                   errCode: 0,
                   message: "Update trạng thái tin đăng thành công",
@@ -4894,8 +5090,33 @@ class AdminController {
           // tindang.expires_tindang = new Date();
           // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
           if (tindang) {
+            let userId = tindang.id_user;
+            const user = await User.findOne({ _id: userId });
+            if (user) {
+              // tạo
+              const thongbao = {
+                id_tindang: id,
+                tieude: tindang.tieude,
+                trangthai: tindang.trangthai,
+              };
+              // lưu vào mảng thongbao của user
+              user.thongbao.push(thongbao);
+              const res_thongbao = await User.updateOne({ _id: userId }, user);
+              if (res_thongbao) {
+                // Gửi thông báo đến admin
+                socket.emit(`${userId}`, {
+                  message: `Tin đăng ${tindang.tieude} của bạn đã được Duyệt`,
+                });
+              }
+            }
             Thu_cung.updateOne({ _id: id }, tindang)
               .then(() => {
+                if (socket) {
+                  // Gửi thông báo đến admin
+                  socket.emit(`${userId}`, {
+                    message: `Tin đăng ${tindang.tieude} của bạn đã được Duyệt`,
+                  });
+                }
                 return res.json({
                   errCode: 0,
                   message: "Update trạng thái tin đăng thành công",
@@ -4915,8 +5136,33 @@ class AdminController {
             now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
           );
           if (tindang) {
+            // lưu thông báo vào bảng User
+            let userId = tindang.id_user;
+            const user = await User.findOne({ _id: userId });
+            if (user) {
+              // tạo
+              const thongbao = {
+                id_tindang: id,
+                tieude: tindang.tieude,
+                trangthai: tindang.trangthai,
+              };
+              user.thongbao.push(thongbao);
+              const res_thongbao = await User.updateOne({ _id: userId }, user);
+              if (res_thongbao) {
+                // Gửi thông báo đến admin
+                socket.emit(`${userId}`, {
+                  message: `Tin đăng ${tindang.tieude} của bạn bị TỪ CHỐI.`,
+                });
+              }
+            }
             Hoc_tap.updateOne({ _id: id }, tindang)
               .then(() => {
+                if (socket) {
+                  // Gửi thông báo đến admin
+                  socket.emit(`${userId}`, {
+                    message: `Tin đăng ${tindang.tieude} của bạn bị TỪ CHỐI.`,
+                  });
+                }
                 return res.json({
                   errCode: 0,
                   message: "Tin không được duyệt, đã ẩn tin thành công",
@@ -4935,6 +5181,25 @@ class AdminController {
             now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
           );
           if (tindang) {
+            // lưu thông báo vào bảng User
+            let userId = tindang.id_user;
+            const user = await User.findOne({ _id: userId });
+            if (user) {
+              // tạo
+              const thongbao = {
+                id_tindang: id,
+                tieude: tindang.tieude,
+                trangthai: tindang.trangthai,
+              };
+              user.thongbao.push(thongbao);
+              const res_thongbao = await User.updateOne({ _id: userId }, user);
+              if (res_thongbao) {
+                // Gửi thông báo đến admin
+                socket.emit(`${userId}`, {
+                  message: `Tin đăng ${tindang.tieude} của bạn bị TỪ CHỐI.`,
+                });
+              }
+            }
             Do_dien_tu.updateOne({ _id: id }, tindang)
               .then(() => {
                 return res.json({
@@ -4955,6 +5220,25 @@ class AdminController {
             now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
           );
           if (tindang) {
+            // lưu thông báo vào bảng User
+            let userId = tindang.id_user;
+            const user = await User.findOne({ _id: userId });
+            if (user) {
+              // tạo
+              const thongbao = {
+                id_tindang: id,
+                tieude: tindang.tieude,
+                trangthai: tindang.trangthai,
+              };
+              user.thongbao.push(thongbao);
+              const res_thongbao = await User.updateOne({ _id: userId }, user);
+              if (res_thongbao) {
+                // Gửi thông báo đến admin
+                socket.emit(`${userId}`, {
+                  message: `Tin đăng ${tindang.tieude} của bạn bị TỪ CHỐI.`,
+                });
+              }
+            }
             Phuong_tien.updateOne({ _id: id }, tindang)
               .then(() => {
                 return res.json({
@@ -4975,6 +5259,25 @@ class AdminController {
             now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
           );
           if (tindang) {
+            // lưu thông báo vào bảng User
+            let userId = tindang.id_user;
+            const user = await User.findOne({ _id: userId });
+            if (user) {
+              // tạo
+              const thongbao = {
+                id_tindang: id,
+                tieude: tindang.tieude,
+                trangthai: tindang.trangthai,
+              };
+              user.thongbao.push(thongbao);
+              const res_thongbao = await User.updateOne({ _id: userId }, user);
+              if (res_thongbao) {
+                // Gửi thông báo đến admin
+                socket.emit(`${userId}`, {
+                  message: `Tin đăng ${tindang.tieude} của bạn bị TỪ CHỐI.`,
+                });
+              }
+            }
             Do_noi_that.updateOne({ _id: id }, tindang)
               .then(() => {
                 return res.json({
@@ -4995,6 +5298,25 @@ class AdminController {
             now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
           );
           if (tindang) {
+            // lưu thông báo vào bảng User
+            let userId = tindang.id_user;
+            const user = await User.findOne({ _id: userId });
+            if (user) {
+              // tạo
+              const thongbao = {
+                id_tindang: id,
+                tieude: tindang.tieude,
+                trangthai: tindang.trangthai,
+              };
+              user.thongbao.push(thongbao);
+              const res_thongbao = await User.updateOne({ _id: userId }, user);
+              if (res_thongbao) {
+                // Gửi thông báo đến admin
+                socket.emit(`${userId}`, {
+                  message: `Tin đăng ${tindang.tieude} của bạn bị TỪ CHỐI.`,
+                });
+              }
+            }
             Dien_lanh.updateOne({ _id: id }, tindang)
               .then(() => {
                 return res.json({
@@ -5015,6 +5337,25 @@ class AdminController {
             now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
           );
           if (tindang) {
+            // lưu thông báo vào bảng User
+            let userId = tindang.id_user;
+            const user = await User.findOne({ _id: userId });
+            if (user) {
+              // tạo
+              const thongbao = {
+                id_tindang: id,
+                tieude: tindang.tieude,
+                trangthai: tindang.trangthai,
+              };
+              user.thongbao.push(thongbao);
+              const res_thongbao = await User.updateOne({ _id: userId }, user);
+              if (res_thongbao) {
+                // Gửi thông báo đến admin
+                socket.emit(`${userId}`, {
+                  message: `Tin đăng ${tindang.tieude} của bạn bị TỪ CHỐI.`,
+                });
+              }
+            }
             Do_ca_nhan.updateOne({ _id: id }, tindang)
               .then(() => {
                 return res.json({
@@ -5035,6 +5376,25 @@ class AdminController {
             now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
           );
           if (tindang) {
+            // lưu thông báo vào bảng User
+            let userId = tindang.id_user;
+            const user = await User.findOne({ _id: userId });
+            if (user) {
+              // tạo
+              const thongbao = {
+                id_tindang: id,
+                tieude: tindang.tieude,
+                trangthai: tindang.trangthai,
+              };
+              user.thongbao.push(thongbao);
+              const res_thongbao = await User.updateOne({ _id: userId }, user);
+              if (res_thongbao) {
+                // Gửi thông báo đến admin
+                socket.emit(`${userId}`, {
+                  message: `Tin đăng ${tindang.tieude} của bạn bị TỪ CHỐI.`,
+                });
+              }
+            }
             Do_giai_tri.updateOne({ _id: id }, tindang)
               .then(() => {
                 return res.json({
@@ -5055,6 +5415,25 @@ class AdminController {
             now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
           );
           if (tindang) {
+            // lưu thông báo vào bảng User
+            let userId = tindang.id_user;
+            const user = await User.findOne({ _id: userId });
+            if (user) {
+              // tạo
+              const thongbao = {
+                id_tindang: id,
+                tieude: tindang.tieude,
+                trangthai: tindang.trangthai,
+              };
+              user.thongbao.push(thongbao);
+              const res_thongbao = await User.updateOne({ _id: userId }, user);
+              if (res_thongbao) {
+                // Gửi thông báo đến admin
+                socket.emit(`${userId}`, {
+                  message: `Tin đăng ${tindang.tieude} của bạn bị TỪ CHỐI.`,
+                });
+              }
+            }
             Thu_cung.updateOne({ _id: id }, tindang)
               .then(() => {
                 return res.json({

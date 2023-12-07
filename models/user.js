@@ -37,6 +37,10 @@ const User = new mongoose.Schema(
       require: false,
       unique: true,
     },
+    thongbao: {
+      type: [],
+      require: false,
+    },
   },
   {
     timestamps: true,

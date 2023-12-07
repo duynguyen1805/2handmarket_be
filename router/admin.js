@@ -43,6 +43,13 @@ router.post("/get-tin-dang-by-id-user", adminController.getTindangbyIdUser);
 router.post("/search-tindang-daduyet", adminController.Search_tindang_daduyet);
 // Search tin đăng trên Header
 router.post("/search-tindang-header", adminController.Search_tindang_header);
+// Lấy thông báo của người dùng
+router.post("/get-thong-bao", adminController.get_noti_userID);
+// Xóa thông báo
+router.delete(
+  "/delete-thong-bao/:id_user/:id_tindang/:trangthaitin",
+  adminController.delete_noti_userID
+);
 
 // CẦN LOGIN ---------------------------------------------------------
 // Lấy 1 người dùng
@@ -68,11 +75,11 @@ router.delete(
   check_user_login,
   adminController.deleteBaidang
 );
-// router.put(
-//   "/update-status-thanhtoan",
-//   check_user_login,
-//   adminController.updateTrangthai_thanhtoan
-// );
+router.put(
+  "/update-status-thanhtoan",
+  // check_user_login,
+  adminController.updateTrangthai_thanhtoan
+);
 // Cập nhật thông tin người dùng
 router.put("/update-user", check_user_login, adminController.updateUser);
 
