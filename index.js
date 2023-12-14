@@ -82,7 +82,7 @@ const io = new Server(server, {
 // Đính đối tượng socket.io vào ứng dụng Express
 app.set("socket", io);
 
-// tạo cv định thời chạy mỗi ngày (0 0 * * *) lúc 00:00 để kiểm tra và cập nhật trangthaithanhtoan
+// tạo cv định thời chạy mỗi ngày (0 0 * * *) lúc 00:00 để kiểm tra => cập nhật trangthaithanhtoan và xóa tin đăng quá hạn
 cron.schedule("0 0 * * *", async () => {
   const collections = [
     Hoc_tap,
@@ -102,13 +102,36 @@ cron.schedule("0 0 * * *", async () => {
         trangthaithanhtoan: 1,
         thoiGianKetThucQuangCao: { $lt: new Date() },
       });
+      // tìm tất cả tin đăng đang hiển thị và kiểm tra hết hạn hiển thị chưa ?
+      const check_thoihantindang = await collection.find({
+        trangthai: 2,
+        expires_tindang: { $lt: new Date() },
+      });
+      const check_thoihantindang_trangthai3 = await collection.find({
+        trangthai: 3,
+        expires_tinbituchoi_tinan: { $lt: new Date() },
+      });
       // Cập nhật trạng thái của các tin đăng về 0
       await Promise.all(
-        tinDangCanCapNhat.map(async (tinDang) => {
-          tinDang.trangthaithanhtoan = 0;
-          tinDang.thoiGianKetThucQuangCao = new Date();
-          await tinDang.save();
-        })
+        [
+          tinDangCanCapNhat.map(async (tinDang) => {
+            tinDang.trangthaithanhtoan = 0;
+            tinDang.thoiGianKetThucQuangCao = new Date();
+            await tinDang.save();
+          }),
+        ],
+        [
+          check_thoihantindang.map(async (tinDang) => {
+            // delete tinDang trangthai_2
+            await tinDang.remove();
+          }),
+        ],
+        [
+          check_thoihantindang_trangthai3.map(async (tinDang) => {
+            // delete tinDang trangthai_3
+            await tinDang.remove();
+          }),
+        ]
       );
       console.log(
         `Đã cập nhật trạng thái tin đăng trong collection ${collection.modelName}.`

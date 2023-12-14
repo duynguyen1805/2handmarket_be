@@ -16,7 +16,7 @@ const mongoose = require("mongoose");
 async function connect() {
   try {
     await mongoose.connect(
-      "mongodb+srv://duynguyenqwert:duynguyenqwert@2handmarket.7kquoar.mongodb.net/2hand_market",
+      `mongodb+srv://duynguyenqwert:${process.env.PASSWORD_MONGODB}@2handmarket.7kquoar.mongodb.net/2hand_market`,
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,

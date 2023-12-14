@@ -4779,8 +4779,8 @@ class AdminController {
           tindang.trangthai = tindang.trangthai += 1;
           const now = new Date();
           tindang.ngayduyettin = now;
-          // tindang.expires_tindang = new Date();
-          // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
+          // mới => sử dụng cronjob để thự hiện xóa tin.
+          // tindang.expires_tindang = new Date(Date.now() + 1000 * 30); //30s
           if (tindang) {
             let userId = tindang.id_user;
             const user = await User.findOne({ _id: userId });
@@ -4823,6 +4823,9 @@ class AdminController {
           tindang.trangthai = tindang.trangthai += 1;
           const now = new Date();
           tindang.ngayduyettin = now;
+          // mới => sử dụng cronjob để thự hiện xóa tin.
+          // tindang.expires_tindang = new Date(Date.now() + 1000 * 30); //30s
+          // cũ và không thực thi được nữa
           // tindang.expires_tindang = new Date();
           // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
           if (tindang) {
@@ -4867,8 +4870,8 @@ class AdminController {
           tindang.trangthai = tindang.trangthai += 1;
           const now = new Date();
           tindang.ngayduyettin = now;
-          // tindang.expires_tindang = new Date();
-          // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
+          // mới => sử dụng cronjob để thự hiện xóa tin.
+          // tindang.expires_tindang = new Date(Date.now() + 1000 * 30); //30s
           if (tindang) {
             let userId = tindang.id_user;
             const user = await User.findOne({ _id: userId });
@@ -4911,8 +4914,8 @@ class AdminController {
           tindang.trangthai = tindang.trangthai += 1;
           const now = new Date();
           tindang.ngayduyettin = now;
-          // tindang.expires_tindang = new Date();
-          // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
+          // mới => sử dụng cronjob để thự hiện xóa tin.
+          // tindang.expires_tindang = new Date(Date.now() + 1000 * 30); //30s
           if (tindang) {
             let userId = tindang.id_user;
             const user = await User.findOne({ _id: userId });
@@ -4955,8 +4958,8 @@ class AdminController {
           tindang.trangthai = tindang.trangthai += 1;
           const now = new Date();
           tindang.ngayduyettin = now;
-          // tindang.expires_tindang = new Date();
-          // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
+          // mới => sử dụng cronjob để thự hiện xóa tin.
+          // tindang.expires_tindang = new Date(Date.now() + 1000 * 30); //30s
           if (tindang) {
             let userId = tindang.id_user;
             const user = await User.findOne({ _id: userId });
@@ -4999,8 +5002,8 @@ class AdminController {
           tindang.trangthai = tindang.trangthai += 1;
           const now = new Date();
           tindang.ngayduyettin = now;
-          // tindang.expires_tindang = new Date();
-          // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
+          // mới => sử dụng cronjob để thự hiện xóa tin.
+          // tindang.expires_tindang = new Date(Date.now() + 1000 * 30); //30s
           if (tindang) {
             let userId = tindang.id_user;
             const user = await User.findOne({ _id: userId });
@@ -5043,8 +5046,8 @@ class AdminController {
           tindang.trangthai = tindang.trangthai += 1;
           const now = new Date();
           tindang.ngayduyettin = now;
-          // tindang.expires_tindang = new Date();
-          // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
+          // mới => sử dụng cronjob để thự hiện xóa tin.
+          // tindang.expires_tindang = new Date(Date.now() + 1000 * 30); //30s
           if (tindang) {
             let userId = tindang.id_user;
             const user = await User.findOne({ _id: userId });
@@ -5087,8 +5090,8 @@ class AdminController {
           tindang.trangthai = tindang.trangthai += 1;
           const now = new Date();
           tindang.ngayduyettin = now;
-          // tindang.expires_tindang = new Date();
-          // now.getTime() + 1000 * 60 * 60 * 24 * 30; //30 ngày
+          // mới => sử dụng cronjob để thự hiện xóa tin.
+          // tindang.expires_tindang = new Date(Date.now() + 1000 * 30); //30s
           if (tindang) {
             let userId = tindang.id_user;
             const user = await User.findOne({ _id: userId });
@@ -5131,10 +5134,8 @@ class AdminController {
           let tindang = await Hoc_tap.findOne({ _id: id });
           tindang.trangthai = 3;
           tindang.lydoantin = lydoantin;
-          const now = new Date();
-          tindang.expires_tinbituchoi_tinan = new Date(
-            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
-          );
+          // mới => sử dụng cronjob để thự hiện xóa tin.
+          // tindang.expires_tinbituchoi_tinan = new Date(Date.now() + 1000 * 30); //30s
           if (tindang) {
             // lưu thông báo vào bảng User
             let userId = tindang.id_user;
@@ -5176,10 +5177,8 @@ class AdminController {
           let tindang = await Do_dien_tu.findOne({ _id: id });
           tindang.trangthai = 3;
           tindang.lydoantin = lydoantin;
-          const now = new Date();
-          tindang.expires_tinbituchoi_tinan = new Date(
-            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
-          );
+          // mới => sử dụng cronjob để thự hiện xóa tin.
+          // tindang.expires_tinbituchoi_tinan = new Date(Date.now() + 1000 * 30); //30s
           if (tindang) {
             // lưu thông báo vào bảng User
             let userId = tindang.id_user;
@@ -5215,10 +5214,8 @@ class AdminController {
           let tindang = await Phuong_tien.findOne({ _id: id });
           tindang.trangthai = 3;
           tindang.lydoantin = lydoantin;
-          const now = new Date();
-          tindang.expires_tinbituchoi_tinan = new Date(
-            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
-          );
+          // mới => sử dụng cronjob để thự hiện xóa tin.
+          // tindang.expires_tinbituchoi_tinan = new Date(Date.now() + 1000 * 30); //30s
           if (tindang) {
             // lưu thông báo vào bảng User
             let userId = tindang.id_user;
@@ -5254,10 +5251,8 @@ class AdminController {
           let tindang = await Do_noi_that.findOne({ _id: id });
           tindang.trangthai = 3;
           tindang.lydoantin = lydoantin;
-          const now = new Date();
-          tindang.expires_tinbituchoi_tinan = new Date(
-            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
-          );
+          // mới => sử dụng cronjob để thự hiện xóa tin.
+          // tindang.expires_tinbituchoi_tinan = new Date(Date.now() + 1000 * 30); //30s
           if (tindang) {
             // lưu thông báo vào bảng User
             let userId = tindang.id_user;
@@ -5293,10 +5288,8 @@ class AdminController {
           let tindang = await Dien_lanh.findOne({ _id: id });
           tindang.trangthai = 3;
           tindang.lydoantin = lydoantin;
-          const now = new Date();
-          tindang.expires_tinbituchoi_tinan = new Date(
-            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
-          );
+          // mới => sử dụng cronjob để thự hiện xóa tin.
+          // tindang.expires_tinbituchoi_tinan = new Date(Date.now() + 1000 * 30); //30s
           if (tindang) {
             // lưu thông báo vào bảng User
             let userId = tindang.id_user;
@@ -5332,10 +5325,8 @@ class AdminController {
           let tindang = await Do_ca_nhan.findOne({ _id: id });
           tindang.trangthai = 3;
           tindang.lydoantin = lydoantin;
-          const now = new Date();
-          tindang.expires_tinbituchoi_tinan = new Date(
-            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
-          );
+          // mới => sử dụng cronjob để thự hiện xóa tin.
+          // tindang.expires_tinbituchoi_tinan = new Date(Date.now() + 1000 * 30); //30s
           if (tindang) {
             // lưu thông báo vào bảng User
             let userId = tindang.id_user;
@@ -5371,10 +5362,8 @@ class AdminController {
           let tindang = await Do_giai_tri.findOne({ _id: id });
           tindang.trangthai = 3;
           tindang.lydoantin = lydoantin;
-          const now = new Date();
-          tindang.expires_tinbituchoi_tinan = new Date(
-            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
-          );
+          // mới => sử dụng cronjob để thự hiện xóa tin.
+          // tindang.expires_tinbituchoi_tinan = new Date(Date.now() + 1000 * 30); //30s
           if (tindang) {
             // lưu thông báo vào bảng User
             let userId = tindang.id_user;
@@ -5410,10 +5399,8 @@ class AdminController {
           let tindang = await Thu_cung.findOne({ _id: id });
           tindang.trangthai = 3;
           tindang.lydoantin = lydoantin;
-          const now = new Date();
-          tindang.expires_tinbituchoi_tinan = new Date(
-            now.getTime() + 1000 * 60 * 60 * 24 * 3 //3 ngày
-          );
+          // mới => sử dụng cronjob để thự hiện xóa tin.
+          // tindang.expires_tinbituchoi_tinan = new Date(Date.now() + 1000 * 30); //30s
           if (tindang) {
             // lưu thông báo vào bảng User
             let userId = tindang.id_user;
