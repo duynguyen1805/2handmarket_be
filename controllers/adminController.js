@@ -20,9 +20,54 @@ const phoneUtil = PhoneNumberUtil.getInstance();
 var salt = bcrypt.genSaltSync(10);
 const crypto = require("crypto");
 const { createJWT } = require("../middleware/JWT");
+const usetube = require('usetube')
 
 class AdminController {
   // NGƯỜI DÙNG
+
+  searchYoutube = async (req, res, next) => {
+    const { page, pageSize, searchString } = req.params;
+
+    let ytSearch = await searchVideo(`${searchString}`);
+    if (ytSearch) {
+      const total = ytSearch.videos?.length ?? 0;
+
+      if (ytSearch?.videos?.length > 0) {
+        return {
+          total: total,
+          songs: await Promise.all(
+            ytSearch?.videos
+              .slice((page - 1) * pageSize, page * pageSize)
+              .map(async (item) => {
+                // const videoLink = await this.getNoAdsVideoLink(item.id);
+                return {
+                  songId: item.id,
+                  fullName: item.title,
+                  bonusData: item.original_title ?? '',
+                  // trackUrl: `https://www.youtube.com/watch?v=${item.id}`,
+                  trackUrlNoCookie: `https://www.youtube-nocookie.com/embed/${item.id}?autoplay=0&rel=0&controls=0`,
+                  trackUrlEmbed: `https://www.youtube.com/embed/${item.id}?autoplay=0&rel=0&controls=0`,
+                  // trackUrl: videoLink,
+                  duration: item.duration,
+                  thumbnail: item.artwork_url ?? '',
+                  username: item.artist ?? '',
+                  userAvatar: item.user?.avatar_url ?? '',
+                  genreName: genre,
+                  created: item.publishedAt
+                };
+              })
+          )
+        };
+      }
+    }
+
+    return {
+      total: 0,
+      songs: []
+    };
+  };
+
+
   // Đăng ký user
   registerUser = async (req, res, next) => {
     const { account, password, _id, email } = req.body; // _id có 21ký tự nhưng ObjectId cần 24ký tự

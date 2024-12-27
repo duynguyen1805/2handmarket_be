@@ -127,4 +127,7 @@ router.post(
   adminController.getLichsu_qc_byMonth
 );
 
+// search youtube
+router.get("/youtube-premium/songs", adminController.searchYoutube);
+
 module.exports = router;
