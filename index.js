@@ -65,6 +65,9 @@ app.use(morgan("combined"));
 // config cookieparser
 app.use(cookieParser());
 
+app.get("/", (req, res) => {
+  res.send("Server is active.");
+});
 route(app);
 
 // cấu hình socket push noti
@@ -153,6 +156,19 @@ cron.schedule("0 0 * * *", async () => {
     .catch((err) => {
       console.error("Lỗi trong quá trình cập nhật tin đăng:", err);
     });
+});
+
+
+// không idea server
+// Cron job chạy mỗi 5 phút
+cron.schedule("*/5 * * * *", async () => {
+  try {
+    const serverUrl = process.env.SERVER_URL || `http://localhost:${port}`;
+    await axios.get(serverUrl);
+    console.log("Ping server thành công.");
+  } catch (error) {
+    console.error("Ping server thất bại:", error.message);
+  }
 });
 
 server.listen(port, () => {
