@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
+    "axios": "^1.7.9",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.0",
     "cloudinary": "^1.29.1",
