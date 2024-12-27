@@ -21,50 +21,53 @@ var salt = bcrypt.genSaltSync(10);
 const crypto = require("crypto");
 const { createJWT } = require("../middleware/JWT");
 const usetube = require('usetube')
+const YouTube = require("youtube-sr").default;
 
 class AdminController {
   // NGƯỜI DÙNG
 
   searchYoutube = async (req, res, next) => {
-    const { page, pageSize, searchString } = req.params;
+    const { page, pageSize, searchString } = req.query;
 
-    let ytSearch = await searchVideo(`${searchString}`);
-    if (ytSearch) {
-      const total = ytSearch.videos?.length ?? 0;
+    // let ytSearch = await usetube.searchVideo(searchString);
+    console.log(req.query);
+    let ytSearch = await YouTube.search(`${searchString}`, { limit: Number(pageSize) });
 
-      if (ytSearch?.videos?.length > 0) {
-        return {
+    if (ytSearch) { 
+      const total = ytSearch?.length ?? 0;
+
+      if (ytSearch?.length > 0) {
+
+        return res.status(200).json({
           total: total,
           songs: await Promise.all(
-            ytSearch?.videos
-              .slice((page - 1) * pageSize, page * pageSize)
+            ytSearch
+              // .slice((page - 1) * pageSize, page * pageSize)
               .map(async (item) => {
+                console.log('item', item);
                 // const videoLink = await this.getNoAdsVideoLink(item.id);
                 return {
                   songId: item.id,
                   fullName: item.title,
-                  bonusData: item.original_title ?? '',
                   // trackUrl: `https://www.youtube.com/watch?v=${item.id}`,
                   trackUrlNoCookie: `https://www.youtube-nocookie.com/embed/${item.id}?autoplay=0&rel=0&controls=0`,
                   trackUrlEmbed: `https://www.youtube.com/embed/${item.id}?autoplay=0&rel=0&controls=0`,
                   // trackUrl: videoLink,
-                  duration: item.duration,
-                  thumbnail: item.artwork_url ?? '',
-                  username: item.artist ?? '',
-                  userAvatar: item.user?.avatar_url ?? '',
-                  genreName: genre,
-                  created: item.publishedAt
+                  duration: item.durationFormatted,
+                  thumbnail: item.thumbnail.url ?? '',
+                  username: item.channel.name ?? '',
+                  created: item.uploadedAt
                 };
               })
           )
-        };
+        });
       }
     }
 
-    return {
+    return res.status(200).json({
       total: 0,
       songs: []
-    };
+    });
   };
 
 
