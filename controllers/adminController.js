@@ -22,6 +22,7 @@ const crypto = require("crypto");
 const { createJWT } = require("../middleware/JWT");
 const usetube = require('usetube')
 const YouTube = require("youtube-sr").default;
+const youtubesearchapi = require("youtube-search-api");
 
 class AdminController {
   // NGƯỜI DÙNG
@@ -31,10 +32,14 @@ class AdminController {
 
     // let ytSearch = await usetube.searchVideo(searchString);
     console.log(req.query);
-    let ytSearch = await YouTube.search(`${searchString}`, { limit: Number(pageSize) });
+    let ytSearch = await YouTube.search(`${searchString}`);
+    // let ytSearch = await youtubesearchapi.GetListByKeyword(searchString, false, 5);
+    //console.log('ytSearch', ytSearch.items[1].thumbnail);
 
     if (ytSearch) { 
       const total = ytSearch?.length ?? 0;
+
+      console.log('total', total);
 
       if (ytSearch?.length > 0) {
 
@@ -44,7 +49,7 @@ class AdminController {
             ytSearch
               // .slice((page - 1) * pageSize, page * pageSize)
               .map(async (item) => {
-                console.log('item', item);
+                // console.log('item', item);
                 // const videoLink = await this.getNoAdsVideoLink(item.id);
                 return {
                   songId: item.id,

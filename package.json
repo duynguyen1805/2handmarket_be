@@ -29,6 +29,7 @@
     "socket.io": "^4.7.2",
     "unidecode": "^0.1.8",
     "usetube": "^2.2.7",
+    "youtube-search-api": "^1.2.2",
     "youtube-sr": "^4.3.11"
   },
   "scripts": {
