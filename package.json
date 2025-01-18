@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
+    "@distube/ytdl-core": "^4.15.8",
     "axios": "^1.7.9",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.0",

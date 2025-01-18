@@ -20,9 +20,10 @@ const phoneUtil = PhoneNumberUtil.getInstance();
 var salt = bcrypt.genSaltSync(10);
 const crypto = require("crypto");
 const { createJWT } = require("../middleware/JWT");
-const usetube = require('usetube')
+const usetube = require("usetube");
 const YouTube = require("youtube-sr").default;
 const youtubesearchapi = require("youtube-search-api");
+const ytdl = require("@distube/ytdl-core");
 
 class AdminController {
   // NGƯỜI DÙNG
@@ -30,27 +31,43 @@ class AdminController {
   searchYoutube = async (req, res, next) => {
     const { page, pageSize, searchString } = req.query;
 
-    // let ytSearch = await usetube.searchVideo(searchString);
-    console.log(req.query);
     let ytSearch = await YouTube.search(`${searchString}`);
-    // let ytSearch = await youtubesearchapi.GetListByKeyword(searchString, false, 5);
-    //console.log('ytSearch', ytSearch.items[1].thumbnail);
+    let inforYT = await ytdl.getBasicInfo(
+      `https://www.youtube.com/watch?v=${ytSearch[3].id}`
+    );
 
-    if (ytSearch) { 
+    console.log("infor", {
+      player_response:
+        inforYT.player_response.playabilityStatus.playableInEmbed,
+    });
+
+    ytSearch = await Promise.all(
+      ytSearch.map(async (item) => {
+        try {
+          const videoInfo = await ytdl.getBasicInfo(
+            `https://www.youtube.com/watch?v=${item.id}`
+          );
+          const playableInEmbed =
+            videoInfo.player_response?.playabilityStatus?.playableInEmbed ??
+            true;
+          return playableInEmbed ? item : null;
+        } catch (error) {
+          console.error(`Không thể lấy thông tin video ${item.id}:`, error);
+          return null;
+        }
+      })
+    );
+    ytSearch = ytSearch.filter((item) => item !== null);
+
+    if (ytSearch) {
       const total = ytSearch?.length ?? 0;
-
-      console.log('total', total);
-
       if (ytSearch?.length > 0) {
-
         return res.status(200).json({
           total: total,
           songs: await Promise.all(
             ytSearch
-              // .slice((page - 1) * pageSize, page * pageSize)
+              .slice((page - 1) * pageSize, page * pageSize)
               .map(async (item) => {
-                // console.log('item', item);
-                // const videoLink = await this.getNoAdsVideoLink(item.id);
                 return {
                   songId: item.id,
                   fullName: item.title,
@@ -59,22 +76,21 @@ class AdminController {
                   trackUrlEmbed: `https://www.youtube.com/embed/${item.id}?autoplay=0&rel=0&controls=1`,
                   // trackUrl: videoLink,
                   duration: item.durationFormatted,
-                  thumbnail: item.thumbnail.url ?? '',
-                  username: item.channel.name ?? '',
-                  created: item.uploadedAt
+                  thumbnail: item.thumbnail.url ?? "",
+                  username: item.channel.name ?? "",
+                  created: item.uploadedAt,
                 };
               })
-          )
+          ),
         });
       }
     }
 
     return res.status(200).json({
       total: 0,
-      songs: []
+      songs: [],
     });
   };
-
 
   // Đăng ký user
   registerUser = async (req, res, next) => {
