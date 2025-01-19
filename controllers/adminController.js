@@ -34,10 +34,10 @@ class AdminController {
 
     const yt = await Innertube.create();
     let inforYT = await yt.getInfo(ytSearch[1].id);
-    console.log("inforYT", {
-      playability_status: inforYT?.playability_status?.embeddable,
-      is_private: inforYT.basic_info.is_private,
-    });
+    // console.log("inforYT", {
+    //   playability_status: inforYT?.playability_status?.embeddable,
+    //   is_private: inforYT.basic_info.is_private,
+    // });
 
     ytSearch = await Promise.all(
       ytSearch.map(async (item) => {
@@ -46,6 +46,14 @@ class AdminController {
           const playableInEmbed =
             videoInfo?.playability_status?.embeddable ??
             true;
+
+          console.log("inforYT", {
+            playability_status: inforYT?.playability_status,
+            is_private: inforYT.basic_info.is_private,
+          });
+
+          console.log("embeddable: ", inforYT?.playability_status?.embeddable);
+
           return playableInEmbed ? item : null;
         } catch (error) {
           console.error(`Không thể lấy thông tin video ${item.id}:`, error);
@@ -53,6 +61,7 @@ class AdminController {
         }
       })
     );
+    console.log('ytSearch',ytSearch)
     ytSearch = ytSearch.filter((item) => item !== null);
 
     if (ytSearch) {
