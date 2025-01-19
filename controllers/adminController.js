@@ -72,6 +72,11 @@ class AdminController {
           const canEmbed = videoInfo?.data?.canEmbed ?? false;
           const privacyStatus = videoInfo?.data?.privacyStatus ?? '';
 
+          console.log('videoInfo: ', {
+            canEmbed: canEmbed,
+            privacyStatus: privacyStatus
+          });
+
           return canEmbed && privacyStatus === 'public' ? item : null;
         } catch (error) {
           console.error(`Không thể lấy thông tin video ${item.id}:`, error);
