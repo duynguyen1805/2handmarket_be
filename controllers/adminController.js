@@ -40,12 +40,10 @@ class AdminController {
       }
 
       const video = response.data.items[0];
-      console.log('video: ', video);
       return {
         success: true,
         data: {
           id: video.id,
-          title: video.snippet.title,
           canEmbed: video.status.embeddable,
           privacyStatus: video.status.privacyStatus
         }
@@ -67,7 +65,6 @@ class AdminController {
       ytSearch.map(async (item) => {
         try {
           const videoInfo = await this.getVideoInfo(item.id);
-          // console.log("videoInfo", videoInfo);
 
           const canEmbed = videoInfo?.data?.canEmbed ?? false;
           const privacyStatus = videoInfo?.data?.privacyStatus ?? '';
