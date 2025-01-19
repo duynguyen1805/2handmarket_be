@@ -22,7 +22,7 @@ const crypto = require("crypto");
 const { createJWT } = require("../middleware/JWT");
 const usetube = require("usetube");
 const YouTube = require("youtube-sr").default;
-const yt = require('youtube-info-streams');
+const { Innertube } = require('youtubei.js');
 
 class AdminController {
   // NGƯỜI DÙNG
@@ -31,17 +31,20 @@ class AdminController {
     const { page, pageSize, searchString } = req.query;
 
     let ytSearch = await YouTube.search(`${searchString}`);
-    let inforYT = await yt.info(ytSearch[1].id);
-    console.log("infor", {
-      playableInEmbed: inforYT?.player_response?.playabilityStatus?.playableInEmbed
+
+    const yt = await Innertube.create();
+    let inforYT = await yt.getInfo(ytSearch[1].id);
+    console.log("inforYT", {
+      playability_status: inforYT?.playability_status?.embeddable,
+      is_private: inforYT.basic_info.is_private,
     });
 
     ytSearch = await Promise.all(
       ytSearch.map(async (item) => {
         try {
-          const videoInfo = await await yt.info(item.id);
+          const videoInfo = await yt.getInfo(item.id);
           const playableInEmbed =
-            videoInfo.player_response?.playabilityStatus?.playableInEmbed ??
+            videoInfo?.playability_status?.embeddable ??
             true;
           return playableInEmbed ? item : null;
         } catch (error) {

@@ -29,8 +29,8 @@
     "socket.io": "^4.7.2",
     "unidecode": "^0.1.8",
     "usetube": "^2.2.7",
-    "youtube-info-streams": "^1.1.1",
-    "youtube-sr": "^4.3.11"
+    "youtube-sr": "^4.3.11",
+    "youtubei.js": "^12.2.0"
   },
   "scripts": {
     "start": "nodemon --inspect index.js",
