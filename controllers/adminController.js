@@ -22,8 +22,7 @@ const crypto = require("crypto");
 const { createJWT } = require("../middleware/JWT");
 const usetube = require("usetube");
 const YouTube = require("youtube-sr").default;
-const { Innertube } = require('youtubei.js');
-const youtube = require('../config/youtube.config');
+const youtube = require("../config/youtube.config");
 
 class AdminController {
   // NGƯỜI DÙNG
@@ -31,12 +30,12 @@ class AdminController {
   getVideoInfo = async (videoId) => {
     try {
       const response = await youtube.videos.list({
-        part: ['status'],
-        id: [videoId]
+        part: ["status"],
+        id: [videoId],
       });
 
       if (!response.data.items || response.data.items.length === 0) {
-        throw new Error('Video not found');
+        throw new Error("Video not found");
       }
 
       const video = response.data.items[0];
@@ -45,43 +44,88 @@ class AdminController {
         data: {
           id: video.id,
           canEmbed: video.status.embeddable,
-          privacyStatus: video.status.privacyStatus
-        }
+          privacyStatus: video.status.privacyStatus,
+        },
       };
     } catch (error) {
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
-  }
+  };
 
   searchYoutube = async (req, res, next) => {
     const { page, pageSize, searchString } = req.query;
+    let ytSearch = [];
 
-    let ytSearch = await YouTube.search(`${searchString}`);
+    // let ytSearch = await YouTube.search(`${searchString}`);
 
-    ytSearch = await Promise.all(
-      ytSearch.map(async (item) => {
-        try {
-          const videoInfo = await this.getVideoInfo(item.id);
+    // ytSearch = await Promise.all(
+    //   ytSearch.map(async (item) => {
+    //     try {
+    //       const videoInfo = await this.getVideoInfo(item.id);
 
-          const canEmbed = videoInfo?.data?.canEmbed ?? false;
-          const privacyStatus = videoInfo?.data?.privacyStatus ?? '';
+    //       const canEmbed = videoInfo?.data?.canEmbed ?? false;
+    //       const privacyStatus = videoInfo?.data?.privacyStatus ?? '';
 
-          console.log('videoInfo: ', {
-            canEmbed: canEmbed,
-            privacyStatus: privacyStatus
-          });
+    //       console.log('videoInfo: ', {
+    //         canEmbed: canEmbed,
+    //         privacyStatus: privacyStatus
+    //       });
 
-          return canEmbed && privacyStatus === 'public' ? item : null;
-        } catch (error) {
-          console.error(`Không thể lấy thông tin video ${item.id}:`, error);
-          return null;
-        }
-      })
-    );
-    ytSearch = ytSearch.filter((item) => item !== null);
+    //       return canEmbed && privacyStatus === 'public' ? item : null;
+    //     } catch (error) {
+    //       console.error(`Không thể lấy thông tin video ${item.id}:`, error);
+    //       return null;
+    //     }
+    //   })
+    // );
+    // ytSearch = ytSearch.filter((item) => item !== null);
+
+    let response = await youtube.search.list({
+      part: ["snippet"],
+      q: searchString,
+      type: ["video"],
+      videoEmbeddable: true,
+      videoSyndicated: true,
+      maxResults: 3,
+    });
+
+    if (!response.data.items || response.data.items.length === 0) {
+      return res.status(200).json({
+        total: 0,
+        songs: [],
+      });
+    } else {
+      ytSearch = response.data.items;
+    }
+
+    // data: {
+    //   kind: 'youtube#searchListResponse',
+    //   etag: 'OPE1_QNxs2iVTxew0UW6E845keY',
+    //   nextPageToken: 'CAMQAA',
+    //   regionCode: 'VN',
+    //   pageInfo: { totalResults: 672143, resultsPerPage: 3 },
+    //   items: [ [Object], [Object], [Object] ]
+    // },
+
+    // console.log("ytSearch: ", ytSearch.data.items);
+    // {
+    //   kind: 'youtube#searchResult',
+    //   etag: 't4h77sjV3mfgCQxXM3yxeIXove4',
+    //   id: { kind: 'youtube#video', videoId: 'abPmZCZZrFA' },
+    //   snippet: {
+    //     publishedAt: '2024-06-08T13:00:01Z',
+    //     channelId: 'UClyA28-01x4z60eWQ2kiNbA',
+    //     title: 'SƠN TÙNG M-TP | ĐỪNG LÀM TRÁI TIM ANH ĐAU | OFFICIAL MUSIC VIDEO',
+    //     description: 'Hãy cùng thưởng thức ca khúc ĐỪNG LÀM TRÁI TIM ANH ĐAU ngay tại đây nhé: https://vivienm.lnk.to/DLTTAD ...',
+    //     thumbnails: [Object],
+    //     channelTitle: 'Sơn Tùng M-TP Official',
+    //     liveBroadcastContent: 'none',
+    //     publishTime: '2024-06-08T13:00:01Z'
+    //   }
+    // },
 
     if (ytSearch) {
       const total = ytSearch?.length ?? 0;
@@ -93,16 +137,16 @@ class AdminController {
               .slice((page - 1) * pageSize, page * pageSize)
               .map(async (item) => {
                 return {
-                  songId: item.id,
-                  fullName: item.title,
+                  songId: item.id.videoId,
+                  fullName: item.snippet.title ?? "",
                   // trackUrl: `https://www.youtube.com/watch?v=${item.id}`,
-                  trackUrlNoCookie: `https://www.youtube-nocookie.com/embed/${item.id}?autoplay=0&rel=0&controls=1`,
-                  trackUrlEmbed: `https://www.youtube.com/embed/${item.id}?autoplay=0&rel=0&controls=1`,
+                  trackUrlNoCookie: `https://www.youtube-nocookie.com/embed/${item.id.videoId}?autoplay=0&rel=0&controls=1`,
+                  trackUrlEmbed: `https://www.youtube.com/embed/${item.id.videoId}?autoplay=0&rel=0&controls=1`,
                   // trackUrl: videoLink,
-                  duration: item.durationFormatted,
-                  thumbnail: item.thumbnail.url ?? "",
-                  username: item.channel.name ?? "",
-                  created: item.uploadedAt,
+                  duration: "",
+                  thumbnail: item.snippet?.thumbnails?.high?.url ?? "",
+                  username: item.snippet?.channelTitle ?? "",
+                  created: item.snippet?.publishedAt,
                 };
               })
           ),
