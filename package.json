@@ -12,6 +12,7 @@
     "express": "^4.17.1",
     "express-handlebars": "^5.3.3",
     "google-libphonenumber": "^3.2.32",
+    "googleapis": "^144.0.0",
     "json-server": "^0.16.3",
     "jsonwebtoken": "8.5.1",
     "lightslider": "^1.1.6",

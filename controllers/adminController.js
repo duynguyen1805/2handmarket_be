@@ -23,36 +23,55 @@ const { createJWT } = require("../middleware/JWT");
 const usetube = require("usetube");
 const YouTube = require("youtube-sr").default;
 const { Innertube } = require('youtubei.js');
+const youtube = require('../config/youtube.config');
 
 class AdminController {
   // NGƯỜI DÙNG
+
+  getVideoInfo = async (videoId) => {
+    try {
+      const response = await youtube.videos.list({
+        part: ['status'],
+        id: [videoId]
+      });
+
+      if (!response.data.items || response.data.items.length === 0) {
+        throw new Error('Video not found');
+      }
+
+      const video = response.data.items[0];
+      console.log('video: ', video);
+      return {
+        success: true,
+        data: {
+          id: video.id,
+          title: video.snippet.title,
+          canEmbed: video.status.embeddable,
+          privacyStatus: video.status.privacyStatus
+        }
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
 
   searchYoutube = async (req, res, next) => {
     const { page, pageSize, searchString } = req.query;
 
     let ytSearch = await YouTube.search(`${searchString}`);
 
-    const yt = await Innertube.create();
-    let inforYT = await yt.getInfo(ytSearch[1].id);
-    // console.log("inforYT", {
-    //   playability_status: inforYT?.playability_status?.embeddable,
-    //   is_private: inforYT.basic_info.is_private,
-    // });
-
     ytSearch = await Promise.all(
       ytSearch.map(async (item) => {
         try {
-          const videoInfo = await yt.getInfo(item.id);
+          const videoInfo = await this.getVideoInfo(item.id);
+          // console.log("videoInfo", videoInfo);
+
           const playableInEmbed =
-            videoInfo?.playability_status?.embeddable ??
+            videoInfo?.data?.canEmbed ??
             true;
-
-          console.log("inforYT", {
-            playability_status: inforYT?.playability_status,
-            is_private: inforYT.basic_info.is_private,
-          });
-
-          console.log("embeddable: ", inforYT?.playability_status?.embeddable);
 
           return playableInEmbed ? item : null;
         } catch (error) {
@@ -61,7 +80,6 @@ class AdminController {
         }
       })
     );
-    console.log('ytSearch',ytSearch)
     ytSearch = ytSearch.filter((item) => item !== null);
 
     if (ytSearch) {
