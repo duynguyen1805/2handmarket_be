@@ -69,6 +69,16 @@ app.use(cookieParser());
 app.get("/", (req, res) => {
   res.send("Server is active.");
 });
+
+app.get("/show-ip-server", async (req, res) => {
+  try {
+    const response = await axios.get("https://api64.ipify.org?format=json");
+    console.log("Server IP:", response?.data);
+  } catch (error) {
+    console.error("Không lấy được IP:", error);
+  }
+});
+
 route(app);
 
 // cấu hình socket push noti
@@ -158,7 +168,6 @@ cron.schedule("0 0 * * *", async () => {
       console.error("Lỗi trong quá trình cập nhật tin đăng:", err);
     });
 });
-
 
 // không idea server
 // Cron job chạy mỗi 5 phút

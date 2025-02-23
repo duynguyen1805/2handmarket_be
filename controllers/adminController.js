@@ -59,6 +59,8 @@ class AdminController {
         mergeOutputFormat: "mp4", // Tự động ghép video + audio nếu có cài ffmpeg
         userAgent:
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+        proxy:
+          "http://brd-customer-hl_93c67cf2-zone-freemium:3x1s4b3e1v4c@brd.superproxy.io:33335",
       });
 
       console.log(`✅ Video đã tải về: ${videoFilePath}`);
