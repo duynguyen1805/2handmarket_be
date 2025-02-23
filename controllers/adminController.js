@@ -57,12 +57,11 @@ class AdminController {
         output: videoFilePath,
         format: "bestvideo+bestaudio",
         mergeOutputFormat: "mp4", // Tự động ghép video + audio nếu có cài ffmpeg
-        proxy:
-          "http://brd-customer-hl_93c67cf2-zone-freemium:3x1s4b3e1v4c@brd.superproxy.io:33335",
-        dumpSingleJson: true,
-        noCheckCertificates: true,
-        noWarnings: true,
-        preferFreeFormats: true,
+        //proxy: "http://brd-customer-hl_93c67cf2-zone-freemium:3x1s4b3e1v4c@brd.superproxy.io:33335",
+        // dumpSingleJson: true,
+        // noCheckCertificates: true,
+        // noWarnings: true,
+        // preferFreeFormats: true,
         addHeader: ["referer:youtube.com", "user-agent:googlebot"],
       });
 
