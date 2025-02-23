@@ -50,6 +50,8 @@ class AdminController {
       // const videoFilePath = path.join(tempDir, `downloaded_video.mp4`);
       const videoFilePath = path.join(tempDir, "youtube_video.mp4");
 
+      const cookiePath = path.join(__dirname, "cookie.txt");
+
       console.log("🔹 Đang tải video...");
 
       // Sử dụng youtube-dl-exec để tải video
@@ -57,12 +59,14 @@ class AdminController {
         output: videoFilePath,
         format: "bestvideo+bestaudio",
         mergeOutputFormat: "mp4", // Tự động ghép video + audio nếu có cài ffmpeg
-        //proxy: "http://brd-customer-hl_93c67cf2-zone-freemium:3x1s4b3e1v4c@brd.superproxy.io:33335",
+        // proxy: "http://brd-customer-hl_93c67cf2-zone-freemium:3x1s4b3e1v4c@brd.superproxy.io:33335",
+        // proxy: "http://alrfqysp:ta68euxebtn5@198.23.239.134:6540",
         // dumpSingleJson: true,
         // noCheckCertificates: true,
         // noWarnings: true,
         // preferFreeFormats: true,
         addHeader: ["referer:youtube.com", "user-agent:googlebot"],
+        cookie: cookiePath,
       });
 
       console.log(`✅ Video đã tải về: ${videoFilePath}`);
