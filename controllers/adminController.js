@@ -24,8 +24,71 @@ const usetube = require("usetube");
 const YouTube = require("youtube-sr").default;
 const youtube = require("../config/youtube.config");
 
+// youtube download
+const { ytmp4 } = require("ruhend-scraper");
+
+const fs = require("fs");
+const { promisify } = require("util");
+const readFileAsync = promisify(fs.readFile);
+const unlinkAsync = promisify(fs.unlink);
+const mkdirAsync = promisify(fs.mkdir);
+const path = require("path");
+const youtubedl = require("youtube-dl-exec");
+const { uploadFileToMinIO } = require("../util/minio-storage");
+
 class AdminController {
   // NGƯỜI DÙNG
+
+  downloadAndUploadYouTubeVideo = async (videoUrl) => {
+    try {
+      // Thư mục tạm để lưu video trước khi upload
+      const tempDir = path.join(__dirname, "temp");
+      await fs.promises.mkdir(tempDir, { recursive: true });
+      // await fs.ensureDir(tempDir);
+
+      // Định dạng tên file tải về
+      // const videoFilePath = path.join(tempDir, `downloaded_video.mp4`);
+      const videoFilePath = path.join(tempDir, "youtube_video.mp4");
+
+      console.log("🔹 Đang tải video...");
+
+      // Sử dụng youtube-dl-exec để tải video
+      await youtubedl(videoUrl, {
+        output: videoFilePath,
+        format: "bestvideo+bestaudio",
+        mergeOutputFormat: "mp4", // Tự động ghép video + audio nếu cần
+      });
+
+      console.log(`✅ Video đã tải về: ${videoFilePath}`);
+
+      // Đọc file video để upload lên MinIO
+      const fileBuffer = await fs.readFileSync(videoFilePath);
+      // const fileBuffer = await fs.readFile(videoFilePath);
+      const uploadedUrl = await uploadFileToMinIO({
+        originalname: "youtube_video.mp4",
+        mimetype: "video/mp4",
+        buffer: fileBuffer,
+      });
+
+      console.log("🔹 Đang upload video lên MinIO...");
+
+      // Xóa file sau khi upload
+      await fs.unlinkSync(videoFilePath);
+      // Kiểm tra và xóa thư mục temp nếu rỗng
+      const files = fs.readdirSync(tempDir);
+      if (files.length === 0) {
+        fs.rmdirSync(tempDir);
+        console.log("✅ Đã xóa thư mục temp");
+      }
+
+      // await fs.remove(videoFilePath);
+      console.log("🗑 File tạm đã được xóa");
+
+      return uploadedUrl;
+    } catch (error) {
+      console.error("❌ Lỗi trong quá trình tải và upload video:", error);
+    }
+  };
 
   getVideoInfo = async (videoId) => {
     try {
@@ -129,6 +192,17 @@ class AdminController {
 
     if (ytSearch) {
       const total = ytSearch?.length ?? 0;
+
+      // const dataFromDownload = await ytmp4(
+      //   `https://www.youtube.com/watch?v=${ytSearch[0].id.videoId}`
+      // );
+      // console.log("dataFromDownload: ", dataFromDownload);
+
+      const videoLink = await this.downloadAndUploadYouTubeVideo(
+        `https://www.youtube.com/watch?v=${ytSearch[0].id.videoId}`
+      );
+      console.log("videoLink: ", videoLink);
+
       if (ytSearch?.length > 0) {
         return res.status(200).json({
           total: total,
