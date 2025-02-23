@@ -60,13 +60,13 @@ class AdminController {
         format: "bestvideo+bestaudio",
         mergeOutputFormat: "mp4", // Tự động ghép video + audio nếu có cài ffmpeg
         // proxy: "http://brd-customer-hl_93c67cf2-zone-freemium:3x1s4b3e1v4c@brd.superproxy.io:33335",
-        // proxy: "http://alrfqysp:ta68euxebtn5@198.23.239.134:6540",
+        proxy: "http://alrfqysp:ta68euxebtn5@198.23.239.134:6540",
         // dumpSingleJson: true,
         // noCheckCertificates: true,
         // noWarnings: true,
         // preferFreeFormats: true,
         addHeader: ["referer:youtube.com", "user-agent:googlebot"],
-        cookies: cookiePath,
+        // cookies: cookiePath,
       });
 
       console.log(`✅ Video đã tải về: ${videoFilePath}`);
