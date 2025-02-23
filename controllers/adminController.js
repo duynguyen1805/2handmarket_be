@@ -66,7 +66,7 @@ class AdminController {
         // noWarnings: true,
         // preferFreeFormats: true,
         addHeader: ["referer:youtube.com", "user-agent:googlebot"],
-        cookie: cookiePath,
+        cookies: cookiePath,
       });
 
       console.log(`✅ Video đã tải về: ${videoFilePath}`);
