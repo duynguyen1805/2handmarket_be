@@ -56,7 +56,9 @@ class AdminController {
       await youtubedl(videoUrl, {
         output: videoFilePath,
         format: "bestvideo+bestaudio",
-        mergeOutputFormat: "mp4", // Tự động ghép video + audio nếu cần
+        mergeOutputFormat: "mp4", // Tự động ghép video + audio nếu có cài ffmpeg
+        userAgent:
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
       });
 
       console.log(`✅ Video đã tải về: ${videoFilePath}`);
