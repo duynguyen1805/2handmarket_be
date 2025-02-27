@@ -40,6 +40,32 @@ const { uploadFileToMinIO } = require("../util/minio-storage");
 class AdminController {
   // NGƯỜI DÙNG
 
+  checkProxyisAlive = async (proxy) => {
+    try {
+      const res = await axios.get("https://www.youtube.com", {
+        proxy: {
+          host: proxy.split(":")[0],
+          port: parseInt(proxy.split(":")[1]),
+        },
+        timeout: 3000, // Timeout 3s
+      });
+      if (res.status === 200) {
+        console.log("Proxy is alive:", proxy);
+      }
+      return res.status === 200;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  getProxies = async () => {
+    const res = await axios.get(
+      "https://proxylist.geonode.com/api/proxy-list?protocols=http&limit=20"
+    );
+    const proxyList = res.data.data.map((proxy) => `${proxy.ip}:${proxy.port}`);
+    return proxyList;
+  };
+
   getRandomProxy = async () => {
     try {
       const { data } = await axios.get(
@@ -49,7 +75,7 @@ class AdminController {
         data.data[Math.floor(Math.random() * data.data.length)];
       return `http://${randomProxy.ip}:${randomProxy.port}`;
     } catch (err) {
-      console.error("❌ Không lấy được proxy:", err);
+      console.error("- Không lấy được proxy:", err);
       return null;
     }
   };
@@ -68,15 +94,15 @@ class AdminController {
 
       const proxy = await this.getRandomProxy();
       if (proxy) {
-        console.log(`🔑 Proxy đang dùng: ${proxy}`);
+        console.log(`- Proxy đang dùng: ${proxy}`);
       } else {
-        console.log("🚫 Không có proxy");
+        console.log("X - Không có proxy");
       }
 
-      console.log("⏳ Chờ 3s trước khi tải video...");
+      console.log("- Chờ 3s trước khi tải video...");
       await new Promise((resolve) => setTimeout(resolve, 3000)); // Delay 3s
 
-      console.log("🔹 Đang tải video...");
+      console.log("- Đang tải video...");
 
       // Sử dụng youtube-dl-exec để tải video
       await youtubedl(videoUrl, {
@@ -85,7 +111,8 @@ class AdminController {
         mergeOutputFormat: "mp4", // Tự động ghép video + audio nếu có cài ffmpeg
         // proxy:
         //   "brd-customer-hl_93c67cf2-zone-freemium:3x1s4b3e1v4c@brd.superproxy.io:33335",
-        proxy: proxy || undefined,
+        // proxy: proxy || undefined,
+        proxy: `http://49.51.244.112:8888`,
         // userAgent:
         //   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         // referer: "https://www.youtube.com/",
@@ -94,7 +121,28 @@ class AdminController {
         // cookies: cookiePath,
       });
 
-      console.log(`✅ Video đã tải về: ${videoFilePath}`);
+      // const proxyList = await this.getProxies();
+      // console.log("- Proxy list:", proxyList);
+      // for (const proxy of proxyList) {
+      //   console.log("- Proxy check:", await this.checkProxyisAlive(proxy));
+      // }
+      // for (const proxy of proxyList) {
+      //   if (await this.checkProxyisAlive(proxy)) {
+      //     console.log("- Proxy alive:", proxy);
+      //     await youtubedl(videoUrl, {
+      //       output: videoFilePath,
+      //       format: "bestvideo+bestaudio",
+      //       mergeOutputFormat: "mp4",
+      //       // proxy: `http://${proxy}`,
+      //       proxy: `http://23.247.136.248:80`,
+      //       addHeader: ["referer:youtube.com", "user-agent:Mozilla/5.0"],
+      //       noCheckCertificates: true,
+      //     });
+      //     break; // Dùng proxy sống đầu tiên tìm thấy
+      //   }
+      // }
+
+      console.log(`- Video đã tải về: ${videoFilePath}`);
 
       // Đọc file video để upload lên MinIO
       const fileBuffer = await fs.readFileSync(videoFilePath);
@@ -105,7 +153,7 @@ class AdminController {
         buffer: fileBuffer,
       });
 
-      console.log("🔹 Đang upload video lên MinIO...");
+      console.log("- Đang upload video lên MinIO...");
 
       // Xóa file sau khi upload
       await fs.unlinkSync(videoFilePath);
@@ -113,15 +161,15 @@ class AdminController {
       const files = fs.readdirSync(tempDir);
       if (files.length === 0) {
         fs.rmdirSync(tempDir);
-        console.log("✅ Đã xóa thư mục temp");
+        console.log("- Đã xóa thư mục temp");
       }
 
       // await fs.remove(videoFilePath);
-      console.log("🗑 File tạm đã được xóa");
+      console.log("- File tạm đã được xóa");
 
       return uploadedUrl;
     } catch (error) {
-      console.error("❌ Lỗi trong quá trình tải và upload video:", error);
+      console.error("X - Lỗi trong quá trình tải và upload video:", error);
     }
   };
 
