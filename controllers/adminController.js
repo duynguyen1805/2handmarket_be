@@ -65,7 +65,7 @@ class AdminController {
       const videoFilePath = path.join(tempDir, "youtube_video.mp4");
       const cookiePath = path.join(__dirname, "cookie.txt");
 
-      const proxy = await getRandomProxy();
+      const proxy = await this.getRandomProxy();
       if (proxy) {
         console.log(`🔑 Proxy đang dùng: ${proxy}`);
       } else {
