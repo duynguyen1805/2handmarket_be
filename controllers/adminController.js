@@ -39,6 +39,20 @@ const { uploadFileToMinIO } = require("../util/minio-storage");
 class AdminController {
   // NGƯỜI DÙNG
 
+  getRandomProxy = async () => {
+    try {
+      const { data } = await axios.get(
+        "https://proxylist.geonode.com/api/proxy-list?protocols=http"
+      );
+      const randomProxy =
+        data.data[Math.floor(Math.random() * data.data.length)];
+      return `http://${randomProxy.ip}:${randomProxy.port}`;
+    } catch (err) {
+      console.error("❌ Không lấy được proxy:", err);
+      return null;
+    }
+  };
+
   downloadAndUploadYouTubeVideo = async (videoUrl) => {
     try {
       // Thư mục tạm để lưu video trước khi upload
@@ -49,8 +63,17 @@ class AdminController {
       // Định dạng tên file tải về
       // const videoFilePath = path.join(tempDir, `downloaded_video.mp4`);
       const videoFilePath = path.join(tempDir, "youtube_video.mp4");
-
       const cookiePath = path.join(__dirname, "cookie.txt");
+
+      const proxy = await getRandomProxy();
+      if (proxy) {
+        console.log(`🔑 Proxy đang dùng: ${proxy}`);
+      } else {
+        console.log("🚫 Không có proxy");
+      }
+
+      console.log("⏳ Chờ 3s trước khi tải video...");
+      await new Promise((resolve) => setTimeout(resolve, 3000)); // Delay 3s
 
       console.log("🔹 Đang tải video...");
 
@@ -61,16 +84,13 @@ class AdminController {
         mergeOutputFormat: "mp4", // Tự động ghép video + audio nếu có cài ffmpeg
         // proxy:
         //   "brd-customer-hl_93c67cf2-zone-freemium:3x1s4b3e1v4c@brd.superproxy.io:33335",
-        // proxy: "http://alrfqysp:ta68euxebtn5@198.23.239.134:6540",
-        // dumpSingleJson: true,
-        // noCheckCertificates: true,
-        // noWarnings: true,
-        // preferFreeFormats: true,
-        // addHeader: ["referer:youtube.com", "user-agent:googlebot"],
-        userAgent:
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        referer: "https://www.youtube.com/",
-        cookies: cookiePath,
+        proxy: proxy || undefined,
+        // userAgent:
+        //   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        // referer: "https://www.youtube.com/",
+        addHeader: ["referer:youtube.com", "user-agent:Mozilla/5.0"],
+        noCheckCertificates: true,
+        // cookies: cookiePath,
       });
 
       console.log(`✅ Video đã tải về: ${videoFilePath}`);
