@@ -113,12 +113,12 @@ class AdminController {
         //   "brd-customer-hl_93c67cf2-zone-freemium:3x1s4b3e1v4c@brd.superproxy.io:33335",
         // proxy: proxy || undefined,
         // proxy: `http://117.6.255.171:61966`,
-        proxy: "",
+        // proxy: "",
         // userAgent:
         //   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         // referer: "https://www.youtube.com/",
-        addHeader: ["referer:youtube.com", "user-agent:Mozilla/5.0"],
-        noCheckCertificates: true,
+        // addHeader: ["referer:youtube.com", "user-agent:Mozilla/5.0"],
+        // noCheckCertificates: true,
         // cookies: cookiePath,
       });
 
